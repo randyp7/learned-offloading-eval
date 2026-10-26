@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<additional>
+    <poi id="RSU1" x="20883.49" y="8986.63" color="255,0,0" layer="100" name="RSU1" type="RSU" />
+    <poi id="RSU2" x="18249.41" y="9853.65" color="255,0,0" layer="100" name="RSU1" type="RSU" />
+</additional>

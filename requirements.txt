@@ -1,0 +1,13 @@
+# Python 3.11 (tested with 3.11.15)
+stable-baselines3==2.3.2
+torch==2.2.0          # CPU build was used: pip install torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+gymnasium==0.29.1
+numpy==1.26.4
+pandas==3.0.3
+scipy==1.17.1
+matplotlib==3.11.0
+cloudpickle==3.1.2
+tensorboard==2.21.0
+eclipse-sumo==1.27.0  # SUMO itself, pip-installable; provides the `sumo` binary
+sumolib==1.27.1
+traci==1.27.1
