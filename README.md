@@ -15,7 +15,7 @@ rebuild every table and figure in the paper.
 | `refactor/src/` | Training entry point, environment factory and the scenario configuration (`training_config/berlin_v2v_scenario.py`, which pins every parameter used in the paper). |
 | `refactor/scripts/` | `fcd_to_csv.py` (SUMO trajectory to replay CSV), `make_paired_fragments.py` (paired warm/cold evaluation windows), `evaluate_models.py` (seeded evaluation of trained policies and rule-based baselines). |
 | `refactor/slurm/` | The job scripts used to run the campaign on a SLURM cluster; each documents its arguments. They also run with `bash` once the `module`/`conda` lines are replaced by your own environment activation. |
-| `checkpoints/` | Final trained policies, five training seeds per arm: `berlin_general_{v2v,local}_seed10{0..4}` (warm continuous-replay training, with and without vehicle-to-vehicle offloading) and `berlin_coldtrain_{v2v,local}_seed10{0..4}` (cold-start training arm). Stable-Baselines3 DQN format. |
+| `checkpoints/` | Final trained policies, five training seeds per arm: `berlin_general_{v2v,local}_seed10{0..4}` (warm continuous-replay training, with and without vehicle-to-vehicle offloading) and `berlin_coldtrain_{v2v,local}_seed10{0..4}` (cold-start training arm), and `berlin_energyaware_{v2v,local}_seed10{0..4}` (energy-in-reward arm, trained with the composite reward that adds energy terms). Stable-Baselines3 DQN format. |
 | `results/` | The evaluation outputs behind every number in the paper (one CSV per evaluation run). |
 | `data/paired/` | The seeded start times of the paired windows and the per-window density statistics used in Fig. 1. |
 | `data/rsu_data.csv` | Roadside-unit positions. |
@@ -67,7 +67,7 @@ python refactor/scripts/make_paired_fragments.py cold --starts data/paired/start
 bash refactor/slurm/eval_window.sh data/paired/corridor_16-18_seed42.csv main_16-18 20 berlin_general
 ```
 
-`eval_window.sh` picks up the policies in `checkpoints/` automatically.
+`eval_window.sh` picks up the policies in `checkpoints/` automatically. The last argument selects the arm: `berlin_general`, `berlin_coldtrain` or `berlin_energyaware`.
 
 **5. Retraining** (optional; about 2 h per policy on one CPU node):
 
