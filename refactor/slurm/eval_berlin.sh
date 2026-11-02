@@ -26,7 +26,7 @@ if [[ -n "$POS_CSV" ]]; then
     echo "mobility: FCD replay from $POS_CSV"
 fi
 
-module load miniforge/24.11.2
+module load apps/binapps/conda/miniforge3/26.9.4-0
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate ito_env
 # Best-effort (FCD replay never launches SUMO; empty SUMO_HOME is fine).

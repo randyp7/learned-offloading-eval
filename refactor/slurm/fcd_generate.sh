@@ -29,7 +29,7 @@ END="${3:?}"
 SEED="${4:?}"
 OUT_CSV="${5:?}"
 
-module load miniforge/24.11.2
+module load apps/binapps/conda/miniforge3/26.9.4-0
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate ito_env
 export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__file__))')"

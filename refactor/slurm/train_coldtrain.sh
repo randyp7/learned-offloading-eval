@@ -13,7 +13,7 @@
 set -euo pipefail
 VARIANT="${1:?v2v|local}"; SEED="${2:?seed}"
 V2V_FLAG=""; [[ "$VARIANT" == "local" ]] && V2V_FLAG="--no-v2v"
-module load miniforge/24.11.2
+module load apps/binapps/conda/miniforge3/26.9.4-0
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate ito_env
 export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__file__))' 2>/dev/null || true)"

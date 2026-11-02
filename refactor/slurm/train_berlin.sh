@@ -44,7 +44,7 @@ else
     echo "mobility: live SUMO (2023-10-18, full 24h)"
 fi
 
-module load miniforge/24.11.2
+module load apps/binapps/conda/miniforge3/26.9.4-0
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate ito_env    # <-- your env (see slurm/README.md); must have eclipse-sumo==1.27.0
 

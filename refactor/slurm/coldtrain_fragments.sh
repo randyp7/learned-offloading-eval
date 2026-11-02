@@ -11,7 +11,7 @@
 # Usage: for i in 0 1 2 3 4; do sbatch -J ctfrag$i refactor/slurm/coldtrain_fragments.sh $i 5; done
 set -euo pipefail
 SHARD="${1:?shard index}"; NSHARD="${2:?shard count}"
-module load miniforge/24.11.2
+module load apps/binapps/conda/miniforge3/26.9.4-0
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate ito_env
 SUMO_BIN="$(python -c 'import os, sumo; print(os.path.join(os.path.dirname(sumo.__file__), "bin", "sumo"))')"
