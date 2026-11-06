@@ -48,7 +48,7 @@ Differences from the original study (report-vs-code provenance):
     corridor at warm density (see EXPERIMENTS note).
   - Cold-start: original episodes launched SUMO at the window start (empty
     network, density far below the labelled hour); re-run replays warm
-    continuous traffic. Report does not mention this artifact.
+    continuous traffic. Report does not mention this artefact.
   - Fleet spec table: report Table 3.2 vs code VEH_CPU_CLASSES (above).
 """
 
@@ -73,7 +73,7 @@ N_EVAL_EPISODES = 50                          # matches the original study's 50-
 # Experiment 1 (general effectiveness): A100 corridor, full 24h day, random
 #   continuous 100s windows (single-file replay). This keeps the original study's
 #   Exp1 CONCEPT (uniformly sampled episode windows across a 24h
-#   detector-calibrated day) while removing two artifacts of the original:
+#   detector-calibrated day) while removing two artefacts of the original:
 #   (a) cold-start — original episodes launched SUMO fresh at the window start,
 #       so the network began EMPTY (density a small fraction of steady state);
 #       replaying the continuous 24h trace gives warm, realistic density

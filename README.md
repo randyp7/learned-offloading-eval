@@ -1,4 +1,4 @@
-# Evaluation design for learned task offloading — artifact
+# Evaluation design for learned task offloading — artefact
 
 This repository accompanies the paper *Evaluation Design for Learned Components in
 Edge-Based Information Systems: Traffic State, Density Coverage and Energy Metering
