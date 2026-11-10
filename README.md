@@ -84,5 +84,17 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
 - Large derived files (the 24-hour trajectory, the evaluation-window fragments and the
   intermediate training checkpoints) are not included. Steps 2 and 3 regenerate them
   deterministically from the released scenario and seeds.
-- The demand is calibrated to the public traffic-detector counts of the city of Berlin
-  (Digitale Plattform Stadtverkehr Berlin, licence dl-de/by-2.0).
+- Traffic source: the road network (`sumo/berlin.net.xml.gz`) and the corridor demand
+  (`sumo/a100-east.rou.xml.gz`) come from the open Berlin SUMO scenario (BeST v1.1) of
+  Schrab et al., "A Large-Scale Traffic Scenario of Berlin for Evaluating Smart Mobility
+  Applications" (2023). Its demand is the synthetic MATSim Open Berlin Scenario
+  (Ziemke et al., Procedia Computer Science 151, 2019), calibrated against traffic counts
+  and re-assigned in SUMO; Schrab et al. report that the simulated volumes on the A100
+  closely match public traffic counts for an average working day. The corridor routes were
+  cut from the scenario's full-day route file (`berlin-matsim_103.rou.gz`) with SUMO's
+  `cutRoutes.py`. No detector data are used directly, and the traffic represents a full
+  day rather than a specific date.
+- The `--date 2023-10-18` live-SUMO path in `refactor/slurm/train_berlin.sh` and the
+  `EXPERIMENTS` entries in `berlin_v2v_scenario.py` belong to the earlier study's
+  full-network setup; they are not used for any result in the paper, which uses FCD replay
+  of the corridor trajectory throughout (`--pos-csv`).
