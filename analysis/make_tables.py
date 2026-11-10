@@ -260,6 +260,14 @@ if all(f.exists() for f in pf.values()):
         f.write("DQN-Full V2V share given a peer (\\%) & " + " & ".join(f"{100*col(t, 'v2v_share_given_peer'):.1f}" for t, _, _ in PEER) + " \\\\\n")
         f.write("V2V tasks within deadline: DQN-Full (\\%) & " + " & ".join(f"{100*col(t, 'met_v2v'):.1f}" for t, _, _ in PEER) + " \\\\\n")
         f.write("V2V tasks within deadline: Greedy (\\%) & " + " & ".join(f"{100*col(t, 'met_v2v', 'Greedy'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        # action mix (per-seed shares averaged over seeds) from the published evaluation files
+        mix_file = {t: (R / "deadline_only/eval_general_24h.csv" if t == "general_24h" else R / f"eval_{t}.csv") for t, _, _ in PEER}
+        def mix(t, m):
+            d = load(mix_file[t]); d = d[d.method == m]
+            return tuple(100 * float(d[c].astype(float).mean()) for c in ("frac_local", "frac_v2v", "frac_rsu"))
+        f.write("\\midrule\n\\multicolumn{7}{@{}l}{\\textit{Action mix (\\% of tasks): local / V2V / RSU}} \\\\\n")
+        for name, m in (("DQN-Full", "RSU-V2V-Local"), ("Greedy", "greedy")):
+            f.write(name + " & " + " & ".join("{:.0f} / {:.0f} / {:.0f}".format(*mix(t, m)) for t, _, _ in PEER) + " \\\\\n")
         f.write("\\bottomrule\n\\end{tabular}%\n}\n")
     num["peer_audit_control_maxdiff"] = max(
         float((rows[t].published_control_ds - rows[t].audit_ds).abs().max()) for t in rows)

@@ -53,7 +53,7 @@ paired episodes in the warm/cold experiment).
 |---|---|---|
 | Service by operating period (Sect. 5, table and density figure) | `eval_main_{00-04,20-24,08-09,16-18}.csv`, full day `deadline_only/eval_general_24h.csv`; the 04–08 check in the text uses `eval_main_04-08.csv` | `tab_service.tex`, `fig_density.pdf` |
 | Greedy-NoV2V comparison (Sect. 5) | `greedy_nov2v/eval_greedy_nov2v_{main_<period>,general_24h}.csv` | (text) |
-| Peer-availability table (Sect. 5) | `peer_audit/eval_peer_availability_{main_<period>,general_24h}.csv` | `tab_peer.tex` |
+| Peer availability and action mix (Sect. 5) | `peer_audit/eval_peer_availability_{main_<period>,general_24h}.csv`; action-mix rows from `eval_main_<period>.csv` and `deadline_only/eval_general_24h.csv` (columns `frac_local`, `frac_v2v`, `frac_rsu`) | `tab_peer.tex` |
 | Warm/cold evaluation (Sect. 6) | `eval_paired_{warm,cold}_{00-04,20-24,08-09,16-18,24h}.csv`; densities from `data/paired/{warm,cold}_<period>/_stats.csv` weighted by `data/paired/eval_sequence_<period>.csv` | `tab_cold.tex` |
 | Cold-start training (Sect. 6) | `eval_coldtrain_paired_{warm,cold}_<period>.csv` against the warm/cold evaluation files | `tab_coldtrain.tex` |
 | Energy ledgers (Sect. 7) | full day `deadline_only/eval_general_24h.csv`, evening peak `eval_main_16-18.csv`; ledgers for every period are in `eval_main_<period>.csv` (columns `energy_user_j_per_task`, `energy_system_j_per_task`) | `tab_energy.tex` |
