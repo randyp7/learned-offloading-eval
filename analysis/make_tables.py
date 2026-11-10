@@ -34,8 +34,8 @@ for w in ["00-04", "08-09", "16-18", "20-24"]:
         RES[w] = (m, e if e.exists() else RES[w][1])
 PAIRED = {w: (R / f"eval_paired_warm_{w}.csv", R / f"eval_paired_cold_{w}.csv") for w, _ in WIN}
 DENS = {"00-04": 4.2, "20-24": 135, "08-09": 375, "16-18": 459, "24h": 274}  # veh/frame, measured from the trace
-LABEL = {"RSU-V2V-Local": "Learned, full action set", "RSU-Local": "Learned, no V2V (ablation)",
-         "greedy": "Greedy rule", "local": "Local-only", "random": "Random"}
+LABEL = {"RSU-V2V-Local": "DQN-Full", "RSU-Local": "DQN-NoV2V",
+         "greedy": "Greedy", "local": "Local", "random": "Random"}
 ORDER = ["RSU-V2V-Local", "RSU-Local", "greedy", "local", "random"]
 
 
@@ -49,6 +49,11 @@ def per_method(df):
     return g.agg(ds=("deadline_satisfaction", "mean"), sd=("deadline_satisfaction", "std"), n=("deadline_satisfaction", "size"),
                  eu=("energy_user_j_per_task", "mean"), es=("energy_system_j_per_task", "mean"),
                  fl=("frac_local", "mean"), fv=("frac_v2v", "mean"), fr=("frac_rsu", "mean"))
+
+
+def mn(x):
+    """Typeset a signed number string with a proper minus sign."""
+    return x.replace("-", "$-$", 1) if x.startswith("-") else x
 
 
 def fmt(m, sd, n):
@@ -72,11 +77,12 @@ for w, lab in WIN:
     num[f"v2v_allgt_{w}"] = diffs[w]["allgt"]; num[f"v2v_vs_greedy_{w}"] = round(diffs[w]["vs_greedy"], 4)
 with open(OUT / "tab_service.tex", "w") as f:
     f.write("\\begin{tabular}{@{}l" + "c" * len(WIN) + "@{}}\n\\toprule\n")
+    f.write(" & \\multicolumn{4}{c}{Targeted operating periods} & Aggregate \\\\\n\\cmidrule(lr){2-5}\\cmidrule(lr){6-6}\n")
     f.write("Policy & " + " & ".join(lab for _, lab in WIN) + " \\\\\n")
     f.write("Vehicles per frame & " + " & ".join(f"{DENS[w]:g}" for w, _ in WIN) + " \\\\\n\\midrule\n")
     for k in ORDER:
         f.write(LABEL[k] + " & " + " & ".join(rows[k]) + " \\\\\n")
-    f.write("\\midrule\nV2V benefit (paired) & " + " & ".join(
+    f.write("\\midrule\nDQN-Full $-$ DQN-NoV2V & " + " & ".join(
         f"{diffs[w]['mean']*100:+.1f}~pp{'$^{*}$' if diffs[w]['p']<0.001 else ''}" for w, _ in WIN) + " \\\\\n")
     f.write("\\bottomrule\n\\end{tabular}\n")
 
@@ -100,7 +106,7 @@ ax.legend(fontsize=7, loc="lower left", ncol=2); fig.tight_layout(); fig.savefig
 with open(OUT / "tab_energy.tex", "w") as f:
     f.write("\\begin{tabular}{@{}lcccccc@{}}\n\\toprule\n")
     f.write(" & \\multicolumn{3}{c}{Full day} & \\multicolumn{3}{c}{Evening peak (16--18)} \\\\\n")
-    f.write("\\cmidrule(lr){2-4}\\cmidrule(lr){5-7}\nPolicy & Deadline & User J & System J & Deadline & User J & System J \\\\\n\\midrule\n")
+    f.write("\\cmidrule(lr){2-4}\\cmidrule(lr){5-7}\nPolicy & Deadline & Requester & System & Deadline & Requester & System \\\\\n\\midrule\n")
     for k in ORDER:
         cells = []
         for w in ("24h", "16-18"):
@@ -129,37 +135,50 @@ for w, lab in rw_wins:
 with open(OUT / "tab_reward.tex", "w") as f:
     f.write("\\begin{tabular}{@{}l" + "c" * len(rw_wins) + "@{}}\n\\toprule\n")
     f.write("Metric & " + " & ".join(lab for _, lab in rw_wins) + " \\\\\n\\midrule\n")
-    for key, name in (("ds", "Deadline satisfaction"), ("eu", "User energy, J/task"), ("es", "System energy, J/task")):
+    for key, name in (("ds", "Deadline satisfaction"), ("eu", "Requester energy (J)"), ("es", "System energy (J)")):
         f.write(name + " & " + " & ".join(cells[(key, 0)]) + " \\\\\n")
-        f.write("\\quad change (paired $t$-test) & " + " & ".join(cells[(key, 1)]) + " \\\\\n")
+        f.write("\\quad change (paired $t$) & " + " & ".join(mn(c) for c in cells[(key, 1)]) + " \\\\\n")
     f.write("\\bottomrule\n\\end{tabular}\n")
 
 # ---------------- Table 2: paired warm/cold (when available) ----------------
 have = {w: (PAIRED[w][0].exists() and PAIRED[w][1].exists()) for w, _ in WIN}
 num["cold_available"] = [w for w, v in have.items() if v]
+def eval_density(kind, w):
+    """Mean vehicles per frame over the windows actually evaluated (24 episodes drawn
+    with replacement from 15 distinct start times, data/paired/eval_sequence_<w>.csv)."""
+    q, seq = ROOT / f"data/paired/{kind}_{w}/_stats.csv", ROOT / f"data/paired/eval_sequence_{w}.csv"
+    if not (q.exists() and seq.exists()):
+        return None
+    st = pd.read_csv(q).set_index("T").veh_per_frame_mean
+    return float(st.loc[pd.read_csv(seq)["T"].to_numpy()].mean())
+
+
 with open(OUT / "tab_cold.tex", "w") as f:
-    f.write("\\begin{tabular}{@{}lcccccccccc@{}}\n\\toprule\n")
-    f.write("Window & \\multicolumn{2}{c}{Veh./frame} & \\multicolumn{2}{c}{Learned, full set} & \\multicolumn{2}{c}{Greedy rule} & \\multicolumn{2}{c}{V2V benefit (pp)} & \\multicolumn{2}{c}{Learned $-$ greedy (pp)} \\\\\n")
-    f.write("\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\\cmidrule(lr){8-9}\\cmidrule(lr){10-11}\n & warm & cold & warm & cold & warm & cold & warm & cold & warm & cold \\\\\n\\midrule\n")
+    f.write("\\setlength{\\tabcolsep}{3pt}%\n\\resizebox{\\textwidth}{!}{%\n\\begin{tabular}{@{}lccccccccccc@{}}\n\\toprule\n")
+    f.write("Window & \\multicolumn{3}{c}{Vehicles per frame} & \\multicolumn{2}{c}{DQN-Full} & \\multicolumn{2}{c}{Greedy} & "
+            "\\multicolumn{2}{c}{\\shortstack{DQN-Full $-$\\\\DQN-NoV2V (pp)}} & \\multicolumn{2}{c}{\\shortstack{DQN-Full $-$\\\\Greedy (pp)}} \\\\\n")
+    f.write("\\cmidrule(lr){2-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-8}\\cmidrule(lr){9-10}\\cmidrule(lr){11-12}\n"
+            " & warm & cold & cold/warm (\\%) & warm & cold & warm & cold & warm & cold & warm & cold \\\\\n\\midrule\n")
     for w, lab in WIN:
         if not have[w]:
-            f.write(lab + " & \\multicolumn{10}{c}{\\textit{pending}} \\\\\n"); continue
+            f.write(lab + " & \\multicolumn{11}{c}{\\textit{pending}} \\\\\n"); continue
         dw, dc = load(PAIRED[w][0]), load(PAIRED[w][1])
-        def st(kind):
-            q = ROOT / f"data/paired/{kind}_{w}/_stats.csv"
-            return f"{pd.read_csv(q).veh_per_frame_mean.mean():.0f}" if q.exists() else "--"
         def parts(df):
             a = df[df.method == "RSU-V2V-Local"].sort_values("seed").deadline_satisfaction.to_numpy()
             b = df[df.method == "RSU-Local"].sort_values("seed").deadline_satisfaction.to_numpy()
             g = float(df[df.method == "greedy"].deadline_satisfaction.mean()); return a, b, g
         aw, bw, gw = parts(dw); ac, bc, gc = parts(dc)
-        f.write(f"{lab} & {st('warm')} & {st('cold')} & {aw.mean():.3f} & {ac.mean():.3f} & {gw:.3f} & {gc:.3f} & "
-                f"{100*(aw-bw).mean():+.1f} & {100*(ac-bc).mean():+.1f} & {100*(aw.mean()-gw):+.1f} & {100*(ac.mean()-gc):+.1f} \\\\\n")
+        vw, vc = eval_density("warm", w), eval_density("cold", w)
+        dens = f"{vw:.0f} & {vc:.0f} & {100*vc/vw:.1f}" if vw and vc else "-- & -- & --"
+        f.write(f"{lab} & {dens} & {aw.mean():.3f} & {ac.mean():.3f} & {gw:.3f} & {gc:.3f} & "
+                f"{mn(f'{100*(aw-bw).mean():+.1f}')} & {mn(f'{100*(ac-bc).mean():+.1f}')} & "
+                f"{mn(f'{100*(aw.mean()-gw):+.1f}')} & {mn(f'{100*(ac.mean()-gc):+.1f}')} \\\\\n")
         num[f"cold_{w}"] = dict(warm_full=round(float(aw.mean()), 4), cold_full=round(float(ac.mean()), 4), warm_greedy=round(gw, 4), cold_greedy=round(gc, 4),
                                 warm_ben=round(float((aw - bw).mean()), 4), cold_ben=round(float((ac - bc).mean()), 4),
                                 warm_gap=round(float(aw.mean() - gw), 4), cold_gap=round(float(ac.mean() - gc), 4),
-                                p_full=round(float(stats.ttest_rel(aw, ac).pvalue), 4), warm_veh=st("warm"), cold_veh=st("cold"))
-    f.write("\\bottomrule\n\\end{tabular}\n")
+                                p_full=round(float(stats.ttest_rel(aw, ac).pvalue), 4),
+                                warm_veh=round(vw, 1) if vw else None, cold_veh=round(vc, 1) if vc else None)
+    f.write("\\bottomrule\n\\end{tabular}%\n}\n")
 
 # ---------------- Table 2b: cold-TRAINED policies vs warm-trained (when available) ----------------
 # eval_coldtrain_paired_{warm,cold}_<w>.csv: policies trained on 20-frame cold-start episodes (the original
@@ -168,8 +187,8 @@ CT = {w: (R / f"eval_coldtrain_paired_warm_{w}.csv", R / f"eval_coldtrain_paired
 have_ct = {w: (CT[w][0].exists() and CT[w][1].exists() and have[w]) for w, _ in WIN}
 num["coldtrain_available"] = [w for w, v in have_ct.items() if v]
 with open(OUT / "tab_coldtrain.tex", "w") as f:
-    f.write("\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\n")
-    f.write("Window & Trained on & \\multicolumn{2}{c}{Learned, full set} & \\multicolumn{2}{c}{V2V benefit (pp)} & \\multicolumn{2}{c}{Learned $-$ greedy (pp)} \\\\\n")
+    f.write("\\setlength{\\tabcolsep}{3pt}%\n\\resizebox{\\textwidth}{!}{%\n\\begin{tabular}{@{}llcccccc@{}}\n\\toprule\n")
+    f.write("Window & Trained on & \\multicolumn{2}{c}{DQN-Full} & \\multicolumn{2}{c}{DQN-Full $-$ DQN-NoV2V (pp)} & \\multicolumn{2}{c}{DQN-Full $-$ Greedy (pp)} \\\\\n")
     f.write("\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-8}\n & & warm & cold & warm & cold & warm & cold \\\\\n\\midrule\n")
     for w, lab in WIN:
         if not have_ct[w]:
@@ -183,7 +202,7 @@ with open(OUT / "tab_coldtrain.tex", "w") as f:
             aw, bw, gw = parts(load(files[0])); ac, bc, gc = parts(load(files[1]))
             res[tr] = dict(aw=aw, bw=bw, gw=gw, ac=ac, bc=bc, gc=gc)
             f.write(f"{lab if tr == 'warm' else ''} & {tr} episodes & {aw.mean():.3f} & {ac.mean():.3f} & "
-                    f"{100*(aw-bw).mean():+.1f} & {100*(ac-bc).mean():+.1f} & {100*(aw.mean()-gw):+.1f} & {100*(ac.mean()-gc):+.1f} \\\\\n")
+                    f"{mn(f'{100*(aw-bw).mean():+.1f}')} & {mn(f'{100*(ac-bc).mean():+.1f}')} & {mn(f'{100*(aw.mean()-gw):+.1f}')} & {mn(f'{100*(ac.mean()-gc):+.1f}')} \\\\\n")
         W_, C_ = res["warm"], res["cold"]
         num[f"coldtrain_{w}"] = dict(
             ct_warm_full=round(float(C_["aw"].mean()), 4), ct_cold_full=round(float(C_["ac"].mean()), 4),
@@ -193,9 +212,9 @@ with open(OUT / "tab_coldtrain.tex", "w") as f:
             train_effect_warm_eval=round(float((W_["aw"] - C_["aw"]).mean()), 4), p_train_warm_eval=round(float(stats.ttest_rel(W_["aw"], C_["aw"]).pvalue), 4),
             train_effect_cold_eval=round(float((W_["ac"] - C_["ac"]).mean()), 4), p_train_cold_eval=round(float(stats.ttest_rel(W_["ac"], C_["ac"]).pvalue), 4),
             greedy_check=round(float(C_["gw"] - W_["gw"]), 5), ct_sd_warm=round(float(C_["aw"].std(ddof=1)), 4), ct_sd_cold=round(float(C_["ac"].std(ddof=1)), 4))
-    f.write("\\bottomrule\n\\end{tabular}\n")
+    f.write("\\bottomrule\n\\end{tabular}%\n}\n")
 # Welch tests (independent training runs) and per-seed averages over the loaded windows
-loaded = [w for w in ["08-09", "16-18", "20-24", "24h"] if have_ct.get(w)]
+loaded = [w for w in ["08-09", "16-18", "20-24"] if have_ct.get(w)]  # the three loaded periods (full day excluded)
 if loaded:
     def fullset(f, m="RSU-V2V-Local"):
         d = load(f); return d[d.method == m].sort_values("seed").deadline_satisfaction.to_numpy()
@@ -220,6 +239,30 @@ for w in ["00-04", "08-09", "16-18", "20-24"]:
         d = per_method(load(m))
         num[f"coldtrain_main_{w}"] = {k: round(float(d.loc[k, "ds"]), 4) for k in ORDER if k in d.index}
         num[f"coldtrain_main_{w}"]["sd_full"] = round(float(d.loc["RSU-V2V-Local", "sd"]), 4)
+
+# ---------------- Peer-availability audit (Sect. 5) ----------------
+# results/peer_audit/eval_peer_availability_<tag>.csv: one row per DQN-Full seed and one for Greedy,
+# recorded on the shared evaluation episodes (published deadline satisfaction reproduced as a control).
+PEER = [("main_00-04", "Night", "00--04"), ("main_04-08", "Ramp", "04--08"), ("main_20-24", "Evening", "20--24"),
+        ("main_08-09", "Peak", "08--09"), ("main_16-18", "Peak", "16--18"), ("general_24h", "Full day", "(aggregate)")]
+pf = {t: R / f"peer_audit/eval_peer_availability_{t}.csv" for t, _, _ in PEER}
+if all(f.exists() for f in pf.values()):
+    rows = {t: pd.read_csv(f) for t, f in pf.items()}
+    def col(t, c, pol="DQN-Full"):
+        d = rows[t]; return float(d[d.policy == pol][c].mean())
+    with open(OUT / "tab_peer.tex", "w") as f:
+        f.write("\\setlength{\\tabcolsep}{3pt}%\n\\resizebox{\\textwidth}{!}{%\n\\begin{tabular}{@{}l" + "c" * len(PEER) + "@{}}\n\\toprule\n")
+        f.write(" & " + " & ".join(a for _, a, _ in PEER) + " \\\\\n & " + " & ".join(b for _, _, b in PEER) + " \\\\\n\\midrule\n")
+        f.write("Peer within 200\\,m (\\% of tasks) & " + " & ".join(f"{100*col(t, 'p_peer', 'Greedy'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        f.write("Peer with a free core (\\% of tasks) & " + " & ".join(f"{100*col(t, 'p_peer_free'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        f.write("Vehicles within 200\\,m, median (IQR) & " + " & ".join(
+            f"{col(t, 'nearby_median', 'Greedy'):.0f} ({col(t, 'nearby_q25', 'Greedy'):.0f}--{col(t, 'nearby_q75', 'Greedy'):.0f})" for t, _, _ in PEER) + " \\\\\n")
+        f.write("DQN-Full V2V share given a peer (\\%) & " + " & ".join(f"{100*col(t, 'v2v_share_given_peer'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        f.write("V2V tasks within deadline: DQN-Full (\\%) & " + " & ".join(f"{100*col(t, 'met_v2v'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        f.write("V2V tasks within deadline: Greedy (\\%) & " + " & ".join(f"{100*col(t, 'met_v2v', 'Greedy'):.1f}" for t, _, _ in PEER) + " \\\\\n")
+        f.write("\\bottomrule\n\\end{tabular}%\n}\n")
+    num["peer_audit_control_maxdiff"] = max(
+        float((rows[t].published_control_ds - rows[t].audit_ds).abs().max()) for t in rows)
 
 # ---------------- Figure 2: diurnal density with windows ----------------
 hourly = {0: 3, 1: 3, 2: 4, 3: 5, 4: 15, 5: 148, 6: 347, 7: 370, 8: 375, 9: 368, 10: 383, 11: 385, 12: 358, 13: 393,

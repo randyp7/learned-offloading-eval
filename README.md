@@ -13,11 +13,11 @@ rebuild every table and figure in the paper.
 | `sumo/` | The A100 corridor scenario: road network and corridor demand (gzipped), RSU and bus-stop definitions, and `berlin_a100_16-18.sumocfg`. These are exactly the inputs SUMO resolves for the configuration used in the study. |
 | `envs/`, `net/`, `utils/`, `config.py` | The vehicular edge computing environment: task model, radio model (NR-V2X), roadside units and the trajectory-replay environment. |
 | `refactor/src/` | Training entry point, environment factory and the scenario configuration (`training_config/berlin_v2v_scenario.py`, which pins every parameter used in the paper). |
-| `refactor/scripts/` | `fcd_to_csv.py` (SUMO trajectory to replay CSV), `make_paired_fragments.py` (paired warm/cold evaluation windows), `evaluate_models.py` (seeded evaluation of trained policies and rule-based baselines). |
+| `refactor/scripts/` | `fcd_to_csv.py` (SUMO trajectory to replay CSV), `make_paired_fragments.py` (paired warm/cold evaluation windows), `evaluate_models.py` (seeded evaluation of trained policies and rule-based baselines), `eval_greedy_nov2v.py` (Greedy with and without V2V on the same episodes), `eval_peer_availability.py` (per-decision peer-availability audit of the shared evaluation episodes). |
 | `refactor/slurm/` | The job scripts used to run the campaign on a SLURM cluster; each documents its arguments. They also run with `bash` once the `module`/`conda` lines are replaced by your own environment activation. |
 | `checkpoints/` | Final trained policies, five training seeds per arm: `berlin_general_{v2v,local}_seed10{0..4}` (warm continuous-replay training, with and without vehicle-to-vehicle offloading) and `berlin_coldtrain_{v2v,local}_seed10{0..4}` (cold-start training arm), and `berlin_energyaware_{v2v,local}_seed10{0..4}` (energy-in-reward arm, trained with the composite reward that adds energy terms). Stable-Baselines3 DQN format. |
-| `results/` | The evaluation outputs behind every number in the paper (one CSV per evaluation run). |
-| `data/paired/` | The seeded start times of the paired windows and the per-window density statistics used in Fig. 1. |
+| `results/` | The evaluation outputs behind every number in the paper (one CSV per evaluation run); see *Paper tables and result files* below. `results/superseded/` holds earlier runs that the paper does not use. |
+| `data/paired/` | The seeded start times of the paired windows, the per-window density statistics used in the diurnal density figure, and `eval_sequence_<period>.csv`, the 24 start times actually evaluated in each period (drawn with replacement from 15 distinct times). |
 | `data/rsu_data.csv` | Roadside-unit positions. |
 | `analysis/make_tables.py` | Rebuilds all result tables, `numbers.json` and both figures from `results/` and `data/paired/`. |
 
@@ -41,6 +41,34 @@ python analysis/make_tables.py
 ```
 
 This writes the LaTeX tables, `numbers.json` and the figures into `analysis/`.
+
+### Paper tables and result files
+
+All learned-policy values are computed per training seed (pooled over every task of the
+evaluated episodes) and then averaged over the five seeds; Greedy, Local and Random are
+single values on the same shared evaluation set (seed 7000, 20 episodes per period, or 24
+paired episodes in the warm/cold experiment).
+
+| Paper item | Result files (`results/`) | Generated table |
+|---|---|---|
+| Service by operating period (Sect. 5, table and density figure) | `eval_main_{00-04,20-24,08-09,16-18}.csv`, full day `deadline_only/eval_general_24h.csv`; the 04–08 check in the text uses `eval_main_04-08.csv` | `tab_service.tex`, `fig_density.pdf` |
+| Greedy-NoV2V comparison (Sect. 5) | `greedy_nov2v/eval_greedy_nov2v_{main_<period>,general_24h}.csv` | (text) |
+| Peer-availability table (Sect. 5) | `peer_audit/eval_peer_availability_{main_<period>,general_24h}.csv` | `tab_peer.tex` |
+| Warm/cold evaluation (Sect. 6) | `eval_paired_{warm,cold}_{00-04,20-24,08-09,16-18,24h}.csv`; densities from `data/paired/{warm,cold}_<period>/_stats.csv` weighted by `data/paired/eval_sequence_<period>.csv` | `tab_cold.tex` |
+| Cold-start training (Sect. 6) | `eval_coldtrain_paired_{warm,cold}_<period>.csv` against the warm/cold evaluation files | `tab_coldtrain.tex` |
+| Energy ledgers (Sect. 7) | full day `deadline_only/eval_general_24h.csv`, evening peak `eval_main_16-18.csv`; ledgers for every period are in `eval_main_<period>.csv` (columns `energy_user_j_per_task`, `energy_system_j_per_task`) | `tab_energy.tex` |
+| Energy in the reward (Sect. 7) | `eval_main_<period>.csv` (DQN-Full) against `eval_main_ea_<period>.csv` (DQN-Energy) | `tab_reward.tex` |
+| Diurnal density figure (Sect. 3) | `data/paired/cold_<period>/_stats.csv` and the 24-hour trajectory | `fig_diurnal.pdf` |
+
+In the result files, `RSU-V2V-Local` is DQN-Full, `RSU-Local` is DQN-NoV2V, and
+`greedy`, `local` and `random` are the three rules.
+
+`results/superseded/` contains (i) `eval_paired_*_prefix.csv`, an earlier run of the
+warm/cold experiment in which per-window statistics files written into the fragment
+directories shifted some episodes onto a neighbouring start time, so the warm and cold
+members of a pair were not always matched (the files in `results/` are the corrected
+re-run, in which every policy and both arms replay the identical start-time sequence), and
+(ii) `*_20260707.csv`, evaluations from an earlier configuration. Neither is used in the paper.
 
 **2. The continuous 24-hour corridor trajectory** (about 1 h; about 0.9 GB of CSV):
 
