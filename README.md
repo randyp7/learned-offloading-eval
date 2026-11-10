@@ -94,7 +94,3 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
   cut from the scenario's full-day route file (`berlin-matsim_103.rou.gz`) with SUMO's
   `cutRoutes.py`. No detector data are used directly, and the traffic represents a full
   day rather than a specific date.
-- The `--date 2023-10-18` live-SUMO path in `refactor/slurm/train_berlin.sh` and the
-  `EXPERIMENTS` entries in `berlin_v2v_scenario.py` belong to the earlier study's
-  full-network setup; they are not used for any result in the paper, which uses FCD replay
-  of the corridor trajectory throughout (`--pos-csv`).
