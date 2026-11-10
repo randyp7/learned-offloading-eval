@@ -92,5 +92,4 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
   and re-assigned in SUMO; Schrab et al. report that the simulated volumes on the A100
   closely match public traffic counts for an average working day. The corridor routes were
   cut from the scenario's full-day route file (`berlin-matsim_103.rou.gz`) with SUMO's
-  `cutRoutes.py`. No detector data are used directly, and the traffic represents a full
-  day rather than a specific date.
+  `cutRoutes.py`.
