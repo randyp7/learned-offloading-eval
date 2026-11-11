@@ -1,12 +1,11 @@
 #!/bin/bash --login
-#SBATCH -p multicore
 #SBATCH -n 2
 #SBATCH -t 2-0
 #SBATCH -o logs/train_%x_%j.out
 #SBATCH -e logs/train_%x_%j.err
 #
 # Train ONE Berlin V2V DQN model (one variant, one seed).
-# SUMO runs in-the-loop (TraCI) so this is CPU-bound -> multicore, NOT gpuA.
+# SUMO runs in-the-loop (TraCI), so this is CPU-bound: request CPU cores, not a GPU.
 #
 # Both variants train on the FULL Berlin 24h network (report §4.5); the A100
 # peak scenario is an EVALUATION scenario, not a training one.
@@ -44,9 +43,14 @@ else
     echo "mobility: live SUMO (2023-10-18, full 24h)"
 fi
 
-module load apps/binapps/conda/miniforge3/26.9.4-0
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate ito_env    # <-- your env (see slurm/README.md); must have eclipse-sumo==1.27.0
+# Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
+# CONDA_ENV (the environment from requirements.txt); with neither set, the active
+# Python environment is used, so the script also runs with plain `bash`.
+if [ -n "${CONDA_MODULE:-}" ] && command -v module >/dev/null 2>&1; then module load "$CONDA_MODULE"; fi
+if [ -n "${CONDA_ENV:-}" ]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "$CONDA_ENV"
+fi
 
 # SUMO_HOME is only needed for LIVE SUMO. With FCD replay (--pos-csv) SUMO is
 # never launched, so this is best-effort: if the eclipse-sumo `sumo` package
@@ -56,7 +60,7 @@ export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__fil
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1  # tiny net: 1 thread is fastest
 echo "SUMO_HOME=$SUMO_HOME"
 
-cd "$SLURM_SUBMIT_DIR"
+cd "${SLURM_SUBMIT_DIR:-$PWD}"
 mkdir -p logs
 
 SCEN="berlin_general_${VARIANT}_seed${SEED}"

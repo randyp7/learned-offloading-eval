@@ -1,5 +1,4 @@
 #!/bin/bash --login
-#SBATCH -p multicore
 #SBATCH -n 2
 #SBATCH -t 8:00:00
 #SBATCH -o logs/eval_%x_%j.out
@@ -26,14 +25,19 @@ if [[ -n "$POS_CSV" ]]; then
     echo "mobility: FCD replay from $POS_CSV"
 fi
 
-module load apps/binapps/conda/miniforge3/26.9.4-0
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate ito_env
+# Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
+# CONDA_ENV (the environment from requirements.txt); with neither set, the active
+# Python environment is used, so the script also runs with plain `bash`.
+if [ -n "${CONDA_MODULE:-}" ] && command -v module >/dev/null 2>&1; then module load "$CONDA_MODULE"; fi
+if [ -n "${CONDA_ENV:-}" ]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "$CONDA_ENV"
+fi
 # Best-effort (FCD replay never launches SUMO; empty SUMO_HOME is fine).
 export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__file__))' 2>/dev/null || true)"
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1  # tiny net: 1 thread is fastest
 
-cd "$SLURM_SUBMIT_DIR"
+cd "${SLURM_SUBMIT_DIR:-$PWD}"
 mkdir -p logs
 
 # Resolve the latest run/model.zip for each variant+seed scenario.

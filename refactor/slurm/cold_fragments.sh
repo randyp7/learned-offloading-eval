@@ -1,5 +1,4 @@
 #!/bin/bash --login
-#SBATCH -p multicore
 #SBATCH -n 2
 #SBATCH -t 6:00:00
 #SBATCH -o logs/cold_%x_%j.out
@@ -15,13 +14,18 @@
 set -euo pipefail
 WIN="${1:?usage: $0 <window>}"
 
-module load apps/binapps/conda/miniforge3/26.9.4-0
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate ito_env
+# Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
+# CONDA_ENV (the environment from requirements.txt); with neither set, the active
+# Python environment is used, so the script also runs with plain `bash`.
+if [ -n "${CONDA_MODULE:-}" ] && command -v module >/dev/null 2>&1; then module load "$CONDA_MODULE"; fi
+if [ -n "${CONDA_ENV:-}" ]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "$CONDA_ENV"
+fi
 SUMO_BIN="$(python -c 'import os, sumo; print(os.path.join(os.path.dirname(sumo.__file__), "bin", "sumo"))')"
 export SUMO_HOME="$(dirname "$(dirname "$SUMO_BIN")")"
 
-cd "$SLURM_SUBMIT_DIR"
+cd "${SLURM_SUBMIT_DIR:-$PWD}"
 mkdir -p logs
 echo "=== cold fragments window=$WIN sumo=$SUMO_BIN start=$(date -u +%FT%TZ) ==="
 python refactor/scripts/make_paired_fragments.py cold \

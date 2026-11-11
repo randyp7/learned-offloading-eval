@@ -1,5 +1,4 @@
 #!/bin/bash --login
-#SBATCH -p multicore
 #SBATCH -n 2
 #SBATCH -t 2-0
 #SBATCH -o logs/train_%x_%j.out
@@ -13,12 +12,17 @@
 set -euo pipefail
 VARIANT="${1:?v2v|local}"; SEED="${2:?seed}"
 V2V_FLAG=""; [[ "$VARIANT" == "local" ]] && V2V_FLAG="--no-v2v"
-module load apps/binapps/conda/miniforge3/26.9.4-0
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate ito_env
+# Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
+# CONDA_ENV (the environment from requirements.txt); with neither set, the active
+# Python environment is used, so the script also runs with plain `bash`.
+if [ -n "${CONDA_MODULE:-}" ] && command -v module >/dev/null 2>&1; then module load "$CONDA_MODULE"; fi
+if [ -n "${CONDA_ENV:-}" ]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "$CONDA_ENV"
+fi
 export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__file__))' 2>/dev/null || true)"
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
-cd "$SLURM_SUBMIT_DIR"; mkdir -p logs
+cd "${SLURM_SUBMIT_DIR:-$PWD}"; mkdir -p logs
 SCEN="berlin_coldtrain_${VARIANT}_seed${SEED}"
 echo "=== cold-trained arm variant=$VARIANT seed=$SEED scenario=$SCEN node=$(hostname) start=$(date -u +%FT%TZ) ==="
 python refactor/src/train/train_model.py \

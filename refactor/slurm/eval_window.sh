@@ -1,5 +1,4 @@
 #!/bin/bash --login
-#SBATCH -p multicore
 #SBATCH -n 2
 #SBATCH -t 8:00:00
 #SBATCH -o logs/evalw_%x_%j.out
@@ -20,13 +19,18 @@ N_EPISODES="${3:-20}"
 # (e.g. berlin_energyaware) alongside the default berlin_general models.
 SCEN_PREFIX="${4:-berlin_general}"
 
-module load apps/binapps/conda/miniforge3/26.9.4-0
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate ito_env
+# Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
+# CONDA_ENV (the environment from requirements.txt); with neither set, the active
+# Python environment is used, so the script also runs with plain `bash`.
+if [ -n "${CONDA_MODULE:-}" ] && command -v module >/dev/null 2>&1; then module load "$CONDA_MODULE"; fi
+if [ -n "${CONDA_ENV:-}" ]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "$CONDA_ENV"
+fi
 export SUMO_HOME="$(python -c 'import os, sumo; print(os.path.dirname(sumo.__file__))' 2>/dev/null || true)"
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 
-cd "$SLURM_SUBMIT_DIR"
+cd "${SLURM_SUBMIT_DIR:-$PWD}"
 mkdir -p logs
 
 latest_model () {  # released checkpoints first, then locally trained runs
