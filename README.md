@@ -1,4 +1,4 @@
-# Evaluation design for learned task offloading — artefact
+# Evaluation Design for Learned Task Offloading in Vehicular Edge Computing — Artefact
 
 This repository accompanies the paper *Designing Credible Evaluations of Learned Components
 in Information Systems: A Vehicular Edge Computing Study* (under double-blind review). It contains everything
