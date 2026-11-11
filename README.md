@@ -1,8 +1,7 @@
 # Evaluation design for learned task offloading — artefact
 
-This repository accompanies the paper *Evaluation Design for Learned Components in
-Edge-Based Information Systems: Traffic State, Density Coverage and Energy Metering
-in Vehicular Task Offloading* (under double-blind review). It contains everything
+This repository accompanies the paper *Designing Credible Evaluations of Learned Components
+in Information Systems: A Vehicular Edge Computing Study* (under double-blind review). It contains everything
 needed to regenerate the traffic data, retrain and re-evaluate the policies, and
 rebuild every table and figure in the paper.
 
@@ -113,11 +112,19 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
   intermediate training checkpoints) are not included. Steps 2 and 3 regenerate them
   deterministically from the released scenario and seeds.
 - Traffic source: the road network (`sumo/berlin.net.xml.gz`) and the corridor demand
-  (`sumo/a100-east.rou.xml.gz`) come from the open Berlin SUMO scenario (BeST v1.1) of
+  (`sumo/a100-east.rou.xml.gz`) come from the open Berlin SUMO Traffic scenario (BeST) of
   Schrab et al., "A Large-Scale Traffic Scenario of Berlin for Evaluating Smart Mobility
-  Applications" (2023). Its demand is the synthetic MATSim Open Berlin Scenario
+  Applications" (2023), https://github.com/mosaic-addons/best-scenario. We used the archive
+  distributed by TU Berlin DCAITI (`best-scenario-v2.zip`; network file header: BeST v1.1,
+  netedit 1.21.0, 2025-03-26). The BeST demand is the synthetic MATSim Open Berlin Scenario
   (Ziemke et al., Procedia Computer Science 151, 2019), calibrated against traffic counts
   and re-assigned in SUMO; Schrab et al. report that the simulated volumes on the A100
   closely match public traffic counts for an average working day. The corridor routes were
   cut from the scenario's full-day route file (`berlin-matsim_103.rou.gz`) with SUMO's
   `cutRoutes.py`.
+- Licence of the scenario files: BeST is licensed under the Creative Commons Attribution
+  4.0 International License (https://creativecommons.org/licenses/by/4.0/). The road
+  network, the bus-stop definitions and the corridor demand cut from the scenario are
+  redistributed in `sumo/` under the same licence, with attribution to Schrab et al. (2023),
+  https://doi.org/10.1007/978-3-031-23721-8_24. The corridor demand is a cut of the
+  scenario's route file (see above).

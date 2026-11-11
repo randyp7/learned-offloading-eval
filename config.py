@@ -12,7 +12,7 @@ SUMO_CONFIG = PROJECT_ROOT / "sumo" / "berlin_a100_00-01.sumocfg"
 #   1. $SUMO_HOME if already exported (recommended — set it in your SLURM script), or
 #   2. $SUMO_HOME_DIR as an explicit override, else empty (env_factory raises a
 #      clear error rather than silently using a stranger's home directory).
-# On CSF, activate the SUMO venv (e.g. ~/sumo1.27.0) which exports SUMO_HOME for you.
+# On a cluster, activate the SUMO venv (e.g. ~/sumo1.27.0) which exports SUMO_HOME for you.
 SUMO_HOME = os.environ.get("SUMO_HOME", os.environ.get("SUMO_HOME_DIR", ""))
 SUMO_HOME_NT = os.environ.get("SUMO_HOME", "")
 

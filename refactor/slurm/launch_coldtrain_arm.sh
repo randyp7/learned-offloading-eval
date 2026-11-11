@@ -1,5 +1,5 @@
 #!/bin/bash
-# Launch the whole cold-trained arm with SLURM dependencies (run from the repo root on CSF).
+# Launch the whole cold-trained arm with SLURM dependencies (run from the repo root on a SLURM cluster).
 # Fragments (5 shards) -> 10 training jobs (afterok all shards) -> 10 evaluations (afterok both variants).
 set -euo pipefail
 mkdir -p logs
