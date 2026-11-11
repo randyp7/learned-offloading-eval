@@ -128,3 +128,9 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
   redistributed in `sumo/` under the same licence, with attribution to Schrab et al. (2023),
   https://doi.org/10.1007/978-3-031-23721-8_24. The corridor demand is a cut of the
   scenario's route file (see above).
+
+## Licence
+
+The code is released under the MIT License (`LICENSE`). Results, trained checkpoints and
+data are released under CC BY 4.0, and the BeST-derived files in `sumo/` remain under the
+scenario's CC BY 4.0 licence with attribution to Schrab et al. (2023); see `LICENSE-DATA.md`.
