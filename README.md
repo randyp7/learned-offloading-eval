@@ -115,7 +115,7 @@ Seeds 100 to 104 were used for each arm. The cold-start training arm is launched
   intermediate training checkpoints) are not included. Steps 2 and 3 regenerate them
   deterministically from the released scenario and seeds.
 - Traffic source: the road network (`sumo/berlin.net.xml.gz`) and the corridor demand
-  (`sumo/a100-east.rou.xml.gz`) come from the open Berlin SUMO Traffic scenario (BeST) of
+  (`sumo/a100-corridor.rou.xml.gz`) come from the open Berlin SUMO Traffic scenario (BeST) of
   Schrab et al., "A Large-Scale Traffic Scenario of Berlin for Evaluating Smart Mobility
   Applications" (2023), https://doi.org/10.1007/978-3-031-23721-8_24,
   https://github.com/mosaic-addons/best-scenario. We used the archive
