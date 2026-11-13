@@ -3,7 +3,85 @@
 This repository accompanies the paper *Designing Credible Evaluations of Learned Components
 in Information Systems: A Vehicular Edge Computing Study* (under double-blind review). It contains everything
 needed to regenerate the traffic data, retrain and re-evaluate the policies, and
-rebuild every table and figure in the paper.
+rebuild the result tables of the paper.
+
+## Materials supporting the paper
+
+This replication package contains the executable and supplementary materials supporting the paper's three-dimensional evaluation protocol.
+
+### Core reproduction materials
+
+- continuous-trajectory generation and replay code;
+- matched warm/cold window generator;
+- policy-training and evaluation scripts;
+- executable experiment configurations;
+- trained checkpoints for the reported training runs;
+- evaluation seeds and window identifiers;
+- machine-readable result data;
+- scripts generating the paper's principal tables; and
+- pinned software dependencies and execution instructions.
+
+### Supplementary analyses
+
+The following documents contain the analyses and details removed from the main paper to satisfy the conference page limit:
+
+- [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md)
+  - complete peer-availability table;
+  - executor-load audit;
+  - Greedy-NoV2V comparison;
+  - morning-ramp robustness analysis.
+- [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md)
+  - complete warm/cold executor-state audit;
+  - sparse-night diagnostic analysis;
+  - exploratory cold-start training experiment;
+  - cold-training interaction estimates and confidence intervals.
+- [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md)
+  - complete DQN-Energy reward-ablation table;
+  - seed-level reward results;
+  - energy per deadline-satisfying task;
+  - analytical energy break-even derivation;
+  - task-class-specific RSU transfer thresholds.
+- [`docs/statistical-analysis.md`](docs/statistical-analysis.md)
+  - aggregation order;
+  - matched-run justification;
+  - paired and Welch-test sensitivity;
+  - treatment of deterministic comparators;
+  - limitations of five-run inference.
+- [`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md)
+  - evaluation conditions;
+  - initialisation reporting;
+  - energy-accounting boundaries; and
+  - training replication for the representative studies discussed in the Related Work.
+
+### Traffic-scenario provenance
+
+This README records (see *Reproducing the paper* and *Notes* below):
+
+- the Berlin scenario version;
+- the source-route data;
+- the transformation used to generate the evaluated corridor;
+- the traffic and evaluation seeds;
+- the applicable third-party licence; and
+- the commands required to regenerate the trajectory.
+
+### Scope of the package
+
+The package supports reproduction of the paper's principal tables and inspection of the supplementary analyses. The paper remains authoritative for the research questions, contribution claims and interpretation; executable configuration files and source code are authoritative for implementation details.
+
+## Related-work evidence matrix
+
+[`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md) documents the four representative task-offloading studies discussed in Sect. 2 of the paper. For each study, it records:
+
+- technical method and execution setting;
+- operating conditions evaluated;
+- simulation or episode initialisation;
+- energy-accounting boundary;
+- service measures; and
+- reported training replication.
+
+Its Sources section gives page, section, figure, table or equation references to the inspected publication for each entry. Where information could not be identified, the matrix records it as "not identified" in the inspected paper rather than inferring that the implementation omitted it.
+
+The matrix supports the paper's bounded statement that the four studies do not consistently report operating-condition coverage, state continuity and accounting scope. It does not support a field-wide claim that these aspects are never reported.
 
 ## Relationship between the paper and this package
 
