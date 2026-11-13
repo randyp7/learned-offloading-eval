@@ -23,6 +23,9 @@ this package rather than repeated in the manuscript:
 | [`docs/warm-cold-protocol.md`](docs/warm-cold-protocol.md) | construction of the matched warm/cold window pairs, what each member preserves or resets, released pair files |
 | [`docs/statistical-analysis.md`](docs/statistical-analysis.md) | units of analysis, aggregation order, paired and Welch tests |
 | [`docs/parameter-provenance.md`](docs/parameter-provenance.md) | source and status of every major parameter |
+| [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md) | RQ1: full peer-availability table, executor-load audit, Greedy-NoV2V, morning-ramp robustness sample |
+| [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md) | RQ2: complete paired-window audit, night condition, exploratory cold-training analysis |
+| [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) | RQ3: ledgers for every operating condition, energy per deadline-satisfying task, DQN-Energy reward ablation, analytical break-even conditions |
 | [`results/supplementary/`](results/supplementary/) | full-day traffic-density profile (`fig_diurnal.pdf`, `.png`) removed from the paper for space |
 | [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
 
@@ -54,6 +57,7 @@ final checkpoints of every reported training arm are included.
 | `data/paired/` | The seeded start times of the paired windows, the per-window density statistics used in the diurnal density figure, and `eval_sequence_<period>.csv`, the 24 start times actually evaluated in each period (drawn with replacement from 15 distinct times). |
 | `data/rsu_data.csv` | Roadside-unit positions. |
 | `analysis/make_tables.py` | Rebuilds all result tables, `numbers.json` and both figures from `results/` and `data/paired/`. |
+| `analysis/make_supplementary.py` | Rebuilds the tables of the three supplementary analysis documents (`docs/supplementary-*.md`) from `results/`; writes `analysis/supplementary_tables.md`. |
 
 ## Environment
 
@@ -72,6 +76,7 @@ All commands below are run from the repository root.
 
 ```bash
 python analysis/make_tables.py
+python analysis/make_supplementary.py   # tables of docs/supplementary-*.md
 ```
 
 This writes the LaTeX tables, `numbers.json` and the figures into `analysis/`.
