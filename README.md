@@ -27,6 +27,7 @@ this package rather than repeated in the manuscript:
 | [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md) | RQ2: complete paired-window audit, night condition, exploratory cold-training analysis |
 | [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) | RQ3: ledgers for every operating condition, energy per deadline-satisfying task, DQN-Energy reward ablation, analytical break-even conditions |
 | [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) | evidence index mapping each interpretive claim of the Discussion to its supporting files and interpretation boundary |
+| [`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md) | evidence for the bounded statements about representative vehicular task-offloading studies in the Introduction and Related Work |
 | [`results/supplementary/`](results/supplementary/) | full-day traffic-density profile (`fig_diurnal.pdf`, `.png`) removed from the paper for space |
 | [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
 
@@ -56,6 +57,18 @@ The supplementary material is organised as follows:
 - [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) maps each interpretive claim of the Discussion to the files above.
 
 These analyses support the interpretations in the Discussion but are not required to follow the paper's principal empirical argument.
+
+## Relationship between the Introduction and supplementary evidence
+
+The Introduction reports only the principal contribution and headline findings. Supporting details are distributed as follows:
+
+- literature-claim verification: [`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md);
+- complete peer and executor audits: [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md);
+- matched warm/cold diagnostics and exploratory cold training: [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md);
+- complete reward-ablation and energy sensitivity analyses: [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md);
+- training, evaluation and statistical procedures: [`docs/statistical-analysis.md`](docs/statistical-analysis.md).
+
+The supplementary analyses support the claims made in the Introduction but are not required to follow its principal argument.
 
 ## Contents
 
