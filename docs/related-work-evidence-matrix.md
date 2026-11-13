@@ -1,4 +1,4 @@
-# Evidence matrix for claims about learned-offloading evaluation
+# Evidence matrix for claims about vehicular task-offloading evaluation
 
 The Introduction and Related Work make bounded claims about representative vehicular task-offloading studies. This matrix records the evidence supporting those claims.
 
@@ -11,7 +11,7 @@ The Introduction and Related Work make bounded claims about representative vehic
 
 ## Interpretation
 
-The paper does not claim that all learned-offloading studies use one operating condition, omit initialisation or use requester-only energy. The claim is deliberately bounded:
+The paper does not claim that all vehicular task-offloading studies use one operating condition, omit initialisation or use requester-only energy. The claim is deliberately bounded:
 
 > Existing evaluations leave open how operating-condition coverage, state continuity and accounting scope affect the resulting evidence.
 
