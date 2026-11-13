@@ -39,6 +39,15 @@ Policies trained under different protocols, warm-start and cold-start training, 
 
 Greedy, Local and Random are evaluated on the shared evaluation set. Greedy and Local are deterministic. Random draws its choices from a generator seeded with the evaluation seed. These comparators are reported as single values rather than being treated as five trained-policy observations.
 
+## Training-run and evaluation-window variability
+
+Two sources of variability enter the reported values.
+
+- **Training-run variability** is the difference between independently trained instances of the same variant. It is the variability that the reported standard deviations and tests describe: each trained instance contributes one condition-level value, and the five values are compared.
+- **Evaluation-window variability** is the difference between the evaluation episodes of one condition (the 20 shared episodes per period, or the 24 matched windows of the warm/cold experiment). It is held constant across policies, because every policy is evaluated on the same episodes and task streams, and it is absorbed when the tasks of all episodes are pooled into one value per trained instance (step 2 of the aggregation order).
+
+The reported standard deviations therefore describe training-run variability conditional on the fixed evaluation set. They do not quantify how a condition-level value would change under a different draw of evaluation windows. Treating episodes as additional replicates would overstate the evidence, since episodes are repeated observations of the same trained instance. A hierarchical model with trained instances and evaluation windows as nested random effects would represent both sources; it is not used in the paper.
+
 ## Interpretation
 
 With five trained instances per policy, statistical inference is necessarily limited. The paper therefore reports and interprets:

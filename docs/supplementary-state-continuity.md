@@ -134,7 +134,7 @@ DQN-Full deadline satisfaction for every training seed.
 
 ### Action and peer-availability audit
 
-DQN-Full, mean over the five seeds of each arm.
+DQN-Full, mean over the five runs of each arm.
 
 | Window | Eval regime | Warm-trained V2V share (%) | Warm-trained V2V share given peer (%) | Warm-trained V2V met (%) | Cold-trained V2V share (%) | Cold-trained V2V share given peer (%) | Cold-trained V2V met (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -156,4 +156,24 @@ DQN-Full, mean over the five seeds of each arm.
 - All interaction confidence intervals include zero.
 - Cold-trained DQN-Full selects V2V more often and, in the warm windows, meets fewer V2V deadlines; these behavioural differences are descriptive rather than evidence of a systematic population-level training effect.
 
-The relationship to the earlier single-seed study is a plausible explanation, not a complete replication or unique causal account.
+### Scope of the cold-training comparison
+
+The cold-trained arm retains the earlier study's:
+
+- cold-start episode initialisation;
+- 20-frame episode duration;
+- observation space;
+- action space;
+- deadline-only reward weights; and
+- learner configuration.
+
+The present experiment differs in training budget and overall network scenario. It therefore tests one potential explanation for the earlier result rather than constituting a complete replication.
+
+Across the loaded evaluation samples, cold-trained DQN-Full has lower mean deadline satisfaction and greater between-run variability. However:
+
+- individual Welch tests are inconclusive;
+- loaded-period aggregate comparisons are inconclusive;
+- policy-by-training-regime confidence intervals contain zero; and
+- behavioural differences are reported descriptively.
+
+Additional independent runs would improve precision, but are not assumed to produce statistical significance.

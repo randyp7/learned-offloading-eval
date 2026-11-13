@@ -24,7 +24,7 @@ policies:
     Random: uniform over the valid alternatives presented to DQN-Full (label random)
     Greedy-NoV2V: Greedy without the V2V alternative (scripts/eval_greedy_nov2v.py)
 
-period_evaluation:                     # Sect. 5 and 7
+period_evaluation:                     # Sect. 5.1 and 5.3
   command: bash scripts/slurm/eval_window.sh data/paired/corridor_<period>_seed42.csv main_<period> 20 <arm>
   episodes: 20                         # 100 non-empty frames each, drawn from the period slice
   periods:                             # seconds of day [start, end) of the slice
@@ -38,7 +38,7 @@ period_evaluation:                     # Sect. 5 and 7
     episodes: 20
     result: results/deadline_only/eval_general_24h.csv
 
-paired_warm_cold_evaluation:           # Sect. 6
+paired_warm_cold_evaluation:           # Sect. 5.2
   start_times: 24 per period, seed 7000 + sum(ord(c) for c in period), at least 2000 s before the period end
   start_time_files: data/paired/starts_<period>.json
   warm_fragments: first 100 non-empty frames at/after each start time, cut from the continuous 24 h trace

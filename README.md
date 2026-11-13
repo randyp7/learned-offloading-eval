@@ -26,6 +26,7 @@ this package rather than repeated in the manuscript:
 | [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md) | RQ1: full peer-availability table, executor-load audit, Greedy-NoV2V, morning-ramp robustness sample |
 | [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md) | RQ2: complete paired-window audit, night condition, exploratory cold-training analysis |
 | [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) | RQ3: ledgers for every operating condition, energy per deadline-satisfying task, DQN-Energy reward ablation, analytical break-even conditions |
+| [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) | evidence index mapping each interpretive claim of the Discussion to its supporting files and interpretation boundary |
 | [`results/supplementary/`](results/supplementary/) | full-day traffic-density profile (`fig_diurnal.pdf`, `.png`) removed from the paper for space |
 | [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
 
@@ -41,6 +42,20 @@ below). (3) Evaluate the released checkpoints on the recorded episode start time
 (4) Rebuild the tables and figures from the new result files (step 1). (5) Compare the new
 result files with the released ones in `results/` and the generated tables with the paper. Training from scratch (step 5) is optional because the five
 final checkpoints of every reported training arm are included.
+
+## Supplementary evidence supporting the Discussion
+
+The main paper reports the principal evidence for operating-condition coverage, state continuity and accounting scope. To satisfy the conference page limit, detailed diagnostic and exploratory analyses are provided here.
+
+The supplementary material is organised as follows:
+
+- [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md) documents peer availability, action use, Greedy-NoV2V, executor load and the morning-ramp robustness analysis.
+- [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md) documents warm/cold peer and executor states, the sparse-night audit and the exploratory cold-training analysis.
+- [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) documents the complete DQN-Energy reward ablation, service-normalised energy and analytical break-even calculations.
+- [`docs/statistical-analysis.md`](docs/statistical-analysis.md) documents aggregation order, matched-run comparisons, Welch-test sensitivity and the relationship between training-run and evaluation-window variability.
+- [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) maps each interpretive claim of the Discussion to the files above.
+
+These analyses support the interpretations in the Discussion but are not required to follow the paper's principal empirical argument.
 
 ## Contents
 
@@ -90,18 +105,18 @@ paired episodes in the warm/cold experiment).
 
 | Paper item | Result files (`results/`) | Generated table |
 |---|---|---|
-| Service by operating period (Sect. 5, table and density figure) | `eval_main_{00-04,20-24,08-09,16-18}.csv`, full day `deadline_only/eval_general_24h.csv`; the 04–08 check in the text uses `eval_main_04-08.csv` | `tab_service.tex`, `fig_density.pdf` |
-| Greedy-NoV2V comparison (Sect. 5) | `greedy_nov2v/eval_greedy_nov2v_{main_<period>,general_24h}.csv` | (text) |
-| Peer availability and action mix (Sect. 5) | `peer_audit/eval_peer_availability_{main_<period>,general_24h}.csv`; action-mix rows from `eval_main_<period>.csv` and `deadline_only/eval_general_24h.csv` (columns `frac_local`, `frac_v2v`, `frac_rsu`) | `tab_peer.tex` |
-| Warm/cold evaluation (Sect. 6) | `eval_paired_{warm,cold}_{00-04,20-24,08-09,16-18,24h}.csv`; densities from `data/paired/{warm,cold}_<period>/_stats.csv` weighted by `data/paired/eval_sequence_<period>.csv` | `tab_cold.tex` |
-| Cold-start training (Sect. 6) | `eval_coldtrain_paired_{warm,cold}_<period>.csv` against the warm/cold evaluation files | `tab_coldtrain.tex` |
-| Executor load (Sect. 5 and 6) | `load_audit/eval_executor_load_{main,paired_warm,paired_cold}_<period>.csv` (DQN-Full, Greedy, Local) | (text) |
-| Peer availability on the paired windows (Sect. 6) | `peer_audit/eval_peer_availability_paired_{warm,cold}_<period>.csv` (warm-trained) and `peer_audit/eval_peer_availability_coldtrain_paired_{warm,cold}_<period>.csv` (cold-trained) | (text) |
-| Cold-start training density by frame (Sect. 6) | `coldtrain_density/coldtrain_density_frames.csv` | (text) |
-| Energy ledgers (Sect. 7) | full day `deadline_only/eval_general_24h.csv`, evening peak `eval_main_16-18.csv`; ledgers for every period are in `eval_main_<period>.csv` (columns `energy_user_j_per_task`, `energy_system_j_per_task`) | `tab_energy.tex` |
-| Energy in the reward (Sect. 7) | `eval_main_<period>.csv` (DQN-Full) against `eval_main_ea_<period>.csv` (DQN-Energy) | `tab_reward.tex` |
+| Service by operating period (Sect. 5.1, table) | `eval_main_{00-04,20-24,08-09,16-18}.csv`, full day `deadline_only/eval_general_24h.csv`; the 04–08 check in the text uses `eval_main_04-08.csv` | `tab_service.tex` (`fig_density.pdf` is no longer in the paper) |
+| Greedy-NoV2V comparison (Sect. 5.1 text; table supplementary) | `greedy_nov2v/eval_greedy_nov2v_{main_<period>,general_24h}.csv` | (text) |
+| Peer availability and action mix (Sect. 5.1 text; table supplementary) | `peer_audit/eval_peer_availability_{main_<period>,general_24h}.csv`; action-mix rows from `eval_main_<period>.csv` and `deadline_only/eval_general_24h.csv` (columns `frac_local`, `frac_v2v`, `frac_rsu`) | `tab_peer.tex` |
+| Warm/cold evaluation (Sect. 5.2) | `eval_paired_{warm,cold}_{00-04,20-24,08-09,16-18,24h}.csv`; densities from `data/paired/{warm,cold}_<period>/_stats.csv` weighted by `data/paired/eval_sequence_<period>.csv` | `tab_cold.tex` |
+| Cold-start training (supplementary) | `eval_coldtrain_paired_{warm,cold}_<period>.csv` against the warm/cold evaluation files | `tab_coldtrain.tex` |
+| Executor load (Sect. 5.1 and 5.2 text; tables supplementary) | `load_audit/eval_executor_load_{main,paired_warm,paired_cold}_<period>.csv` (DQN-Full, Greedy, Local) | (text) |
+| Peer availability on the paired windows (Sect. 5.2 text; tables supplementary) | `peer_audit/eval_peer_availability_paired_{warm,cold}_<period>.csv` (warm-trained) and `peer_audit/eval_peer_availability_coldtrain_paired_{warm,cold}_<period>.csv` (cold-trained) | (text) |
+| Cold-start training density by frame (supplementary) | `coldtrain_density/coldtrain_density_frames.csv` | (text) |
+| Energy ledgers (Sect. 5.3) | full day `deadline_only/eval_general_24h.csv`, evening peak `eval_main_16-18.csv`; ledgers for every period are in `eval_main_<period>.csv` (columns `energy_user_j_per_task`, `energy_system_j_per_task`) | `tab_energy.tex` |
+| Energy in the reward (Sect. 5.3 text; table supplementary) | `eval_main_<period>.csv` (DQN-Full) against `eval_main_ea_<period>.csv` (DQN-Energy) | `tab_reward.tex` |
 | Full-day density profile (supplementary) | `data/paired/cold_<period>/_stats.csv`, `data/paired/eval_sequence_<period>.csv` and the 24-hour trajectory | `fig_diurnal.pdf` (copy in `results/supplementary/`) |
-| Warm/cold window pairs (Sect. 6) | `window-pairs.csv`, `paired_density/paired_density_frames.csv` | (text) |
+| Warm/cold window pairs (Sect. 5.2) | `window-pairs.csv`, `paired_density/paired_density_frames.csv` | (text) |
 | Welch sensitivity of the seed-matched tests | `eval_main_<period>.csv`, `eval_main_ea_<period>.csv` | `numbers.json` (`v2v_welch_p_*`, `rw_*.welch_p`) |
 
 In the result files, `RSU-V2V-Local` is DQN-Full, `RSU-Local` is DQN-NoV2V, and
