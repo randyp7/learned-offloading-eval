@@ -9,7 +9,7 @@
 # live SUMO (~100x faster: the 162 MB Berlin net is parsed only here).
 #
 # This is the reusable primitive — one time window per invocation:
-#   sbatch -J fcd_peak refactor/slurm/fcd_generate.sh \
+#   sbatch -J fcd_peak scripts/slurm/fcd_generate.sh \
 #       sumo/berlin_a100_06-12.sumocfg 28800 32400 42 data/fcd/a100_peak.csv
 #
 # Args: <sumocfg> <begin_s> <end_s> <seed> <out_csv>
@@ -50,7 +50,7 @@ sumo -c "$CFG" \
     --output-prefix "" --fcd-output "$TMP_FCD" \
     --no-step-log true --no-warnings true
 
-python refactor/scripts/fcd_to_csv.py "$TMP_FCD" "$OUT_CSV"
+python scripts/fcd_to_csv.py "$TMP_FCD" "$OUT_CSV"
 rm -f "$TMP_FCD"
 
 echo "=== done $(date -u +%FT%TZ): $OUT_CSV ($(du -h "$OUT_CSV" | cut -f1)) ==="

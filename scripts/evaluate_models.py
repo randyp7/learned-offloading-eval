@@ -46,8 +46,8 @@ try:
 except Exception:
     pass
 
-REFACTOR_ROOT = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = REFACTOR_ROOT.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REFACTOR_ROOT = PROJECT_ROOT / "refactor"
 sys.path.insert(0, str(REFACTOR_ROOT / "src"))
 sys.path.insert(0, str(PROJECT_ROOT))
 

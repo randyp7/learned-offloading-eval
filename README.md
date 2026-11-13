@@ -28,7 +28,7 @@ this package rather than repeated in the manuscript:
 
 The paper remains authoritative for the research questions, experimental contrasts and
 interpretation. The released source code and the parameters it pins (`config.py`,
-`refactor/src/training_config/`, the job scripts in `refactor/slurm/`) are authoritative for
+`refactor/src/training_config/`, the job scripts in `scripts/slurm/`) are authoritative for
 executable implementation details; the documents and the files in `configs/` describe them
 and are not read by the code.
 
@@ -47,8 +47,8 @@ final checkpoints of every reported training arm are included.
 | `sumo/` | The A100 corridor scenario: road network and corridor demand (gzipped), RSU and bus-stop definitions, and `berlin_a100_16-18.sumocfg`. These are exactly the inputs SUMO resolves for the configuration used in the study. |
 | `envs/`, `net/`, `utils/`, `config.py` | The vehicular edge computing environment: task model, radio model (NR-V2X), roadside units and the trajectory-replay environment. |
 | `refactor/src/` | Training entry point, environment factory and the scenario configuration (`training_config/berlin_v2v_scenario.py`, which pins every parameter used in the paper). |
-| `refactor/scripts/` | `fcd_to_csv.py` (SUMO trajectory to replay CSV), `make_paired_fragments.py` (paired warm/cold evaluation windows), `evaluate_models.py` (seeded evaluation of trained policies and rule-based baselines), `eval_greedy_nov2v.py` (Greedy with and without V2V on the same episodes), `eval_peer_availability.py` (per-decision peer-availability audit of the shared evaluation episodes), `eval_executor_load.py` (per-decision executor waiting time, busy-core share and backlog, read-only), `coldtrain_density.py` (frame-wise vehicle counts of the cold-start training fragments). |
-| `refactor/slurm/` | The job scripts used to run the campaign on a SLURM cluster; each documents its arguments. They run with plain `bash` in the active Python environment; under `sbatch`, set `CONDA_MODULE` (the module that provides conda, if any) and `CONDA_ENV` (the environment built from `requirements.txt`), and add your site's partition option. |
+| `scripts/` | `fcd_to_csv.py` (SUMO trajectory to replay CSV), `make_paired_fragments.py` (paired warm/cold evaluation windows), `evaluate_models.py` (seeded evaluation of trained policies and rule-based baselines), `eval_greedy_nov2v.py` (Greedy with and without V2V on the same episodes), `eval_peer_availability.py` (per-decision peer-availability audit of the shared evaluation episodes), `eval_executor_load.py` (per-decision executor waiting time, busy-core share and backlog, read-only), `coldtrain_density.py` (frame-wise vehicle counts of the cold-start training fragments). |
+| `scripts/slurm/` | The job scripts used to run the campaign on a SLURM cluster; each documents its arguments. They run with plain `bash` in the active Python environment; under `sbatch`, set `CONDA_MODULE` (the module that provides conda, if any) and `CONDA_ENV` (the environment built from `requirements.txt`), and add your site's partition option. |
 | `checkpoints/` | Final trained policies, five training seeds per arm: `berlin_general_{v2v,local}_seed10{0..4}` (warm continuous-replay training, with and without vehicle-to-vehicle offloading) and `berlin_coldtrain_{v2v,local}_seed10{0..4}` (cold-start training arm), and `berlin_energyaware_{v2v,local}_seed10{0..4}` (energy-in-reward arm, trained with the composite reward that adds energy terms). Stable-Baselines3 DQN format. |
 | `results/` | The evaluation outputs behind every number in the paper (one CSV per evaluation run); see *Paper tables and result files* below. `results/superseded/` holds earlier runs that the paper does not use. |
 | `data/paired/` | The seeded start times of the paired windows, the per-window density statistics used in the diurnal density figure, and `eval_sequence_<period>.csv`, the 24 start times actually evaluated in each period (drawn with replacement from 15 distinct times). |
@@ -114,24 +114,24 @@ re-run, in which every policy and both arms replay the identical start-time sequ
 ```bash
 sumo -c sumo/berlin_a100_16-18.sumocfg --seed 42 --step-length 1 \
      --begin 0 --end 86400 --fcd-output corridor_fcd.xml --no-step-log true
-python refactor/scripts/fcd_to_csv.py corridor_fcd.xml data/fcd/corridor_24h_seed42.csv
+python scripts/fcd_to_csv.py corridor_fcd.xml data/fcd/corridor_24h_seed42.csv
 ```
 
-On a cluster, `refactor/slurm/fcd_generate.sh sumo/berlin_a100_16-18.sumocfg 0 86400 42 data/fcd/corridor_24h_seed42.csv` does the same.
+On a cluster, `scripts/slurm/fcd_generate.sh sumo/berlin_a100_16-18.sumocfg 0 86400 42 data/fcd/corridor_24h_seed42.csv` does the same.
 
 **3. Evaluation windows.** Warm windows are slices of the continuous trajectory. Cold
 windows are separate SUMO runs started on an empty network at the same seeded times:
 
 ```bash
-python refactor/scripts/make_paired_fragments.py warm --trace data/fcd/corridor_24h_seed42.csv --out data/paired --slices
-python refactor/scripts/make_paired_fragments.py cold --starts data/paired/starts_16-18.json \
+python scripts/make_paired_fragments.py warm --trace data/fcd/corridor_24h_seed42.csv --out data/paired --slices
+python scripts/make_paired_fragments.py cold --starts data/paired/starts_16-18.json \
        --cfg sumo/berlin_a100_16-18.sumocfg --out data/paired/cold_16-18 --seed 42   # repeat per window
 ```
 
 **4. Evaluation of the released policies** on a window (writes `results/eval_<tag>.csv`):
 
 ```bash
-bash refactor/slurm/eval_window.sh data/paired/corridor_16-18_seed42.csv main_16-18 20 berlin_general
+bash scripts/slurm/eval_window.sh data/paired/corridor_16-18_seed42.csv main_16-18 20 berlin_general
 ```
 
 `eval_window.sh` picks up the policies in `checkpoints/` automatically. The last argument selects the arm: `berlin_general`, `berlin_coldtrain` or `berlin_energyaware`.
@@ -139,12 +139,12 @@ bash refactor/slurm/eval_window.sh data/paired/corridor_16-18_seed42.csv main_16
 **5. Retraining** (optional; about 2 h per policy on one CPU node):
 
 ```bash
-bash refactor/slurm/train_berlin.sh v2v   100 data/fcd/corridor_24h_seed42.csv
-bash refactor/slurm/train_berlin.sh local 100 data/fcd/corridor_24h_seed42.csv
+bash scripts/slurm/train_berlin.sh v2v   100 data/fcd/corridor_24h_seed42.csv
+bash scripts/slurm/train_berlin.sh local 100 data/fcd/corridor_24h_seed42.csv
 ```
 
 Seeds 100 to 104 were used for each arm. The cold-start training arm is launched with
-`refactor/slurm/launch_coldtrain_arm.sh`.
+`scripts/slurm/launch_coldtrain_arm.sh`.
 
 ## Notes
 

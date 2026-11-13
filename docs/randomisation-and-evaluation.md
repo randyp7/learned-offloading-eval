@@ -4,9 +4,9 @@
 
 Each policy is trained for 1.5 million task-level decisions (`--timesteps 1500000`). One decision assigns one generated task to an executor class. All tasks generated in a one-second traffic frame are decided one after another before the environment advances to the next frame. Their candidates are evaluated when the frame begins (`scheduling-and-comparators.md`).
 
-The warm-start arms (DQN-Full, DQN-NoV2V and DQN-Energy) train on 100-frame episodes cut from the continuous 24-hour trajectory (`refactor/slurm/train_berlin.sh`). The replay environment counts frames as the timesteps present in the trajectory, which are the timesteps with at least one vehicle. Each episode starts at a frame drawn uniformly, with replacement, from all frames that leave room for a complete episode. The resulting training distribution follows the temporal frequency of traffic conditions rather than balancing operating periods. The first frame of an episode initialises the vehicle positions; tasks are generated on the remaining 99 frames.
+The warm-start arms (DQN-Full, DQN-NoV2V and DQN-Energy) train on 100-frame episodes cut from the continuous 24-hour trajectory (`scripts/slurm/train_berlin.sh`). The replay environment counts frames as the timesteps present in the trajectory, which are the timesteps with at least one vehicle. Each episode starts at a frame drawn uniformly, with replacement, from all frames that leave room for a complete episode. The resulting training distribution follows the temporal frequency of traffic conditions rather than balancing operating periods. The first frame of an episode initialises the vehicle positions; tasks are generated on the remaining 99 frames.
 
-The cold-start training arm trains on 20-frame episodes. Each episode replays one of the cold-start fragments (`refactor/slurm/train_coldtrain.sh`, `configs/cold_training.yaml`).
+The cold-start training arm trains on 20-frame episodes. Each episode replays one of the cold-start fragments (`scripts/slurm/train_coldtrain.sh`, `configs/cold_training.yaml`).
 
 Training seeds are 100, 101, 102, 103 and 104. Each seed sets the DQN initialisation and exploration, the episode start sampling (environment seed + 999) and the vehicle computing-class assignments.
 
@@ -46,6 +46,6 @@ The repository includes:
 - the warm/cold pairing: the warm and cold fragments of a pair share the file name `frag_t<start>.csv`; `results/window-pairs.csv` lists every pair with its density, and `results/paired_density/paired_density_frames.csv` gives vehicles per frame by pair and frame position (`warm-cold-protocol.md`);
 - the training seeds (100–104), the evaluation seed (7000) and the task-seed base (12345);
 - the final policy checkpoints, named by arm, variant and training seed (`checkpoints/berlin_<arm>_<variant>_seed<seed>/model.zip`);
-- the scripts that regenerate the evaluation windows (`refactor/scripts/make_paired_fragments.py`), the evaluations (`refactor/scripts/evaluate_models.py`, `refactor/slurm/eval_window.sh`) and the tables (`analysis/make_tables.py`).
+- the scripts that regenerate the evaluation windows (`scripts/make_paired_fragments.py`), the evaluations (`scripts/evaluate_models.py`, `scripts/slurm/eval_window.sh`) and the tables (`analysis/make_tables.py`).
 
 The episode start times of the period and full-day evaluations, and the task streams, are not stored as files. Running the evaluation with the seeds above regenerates them.

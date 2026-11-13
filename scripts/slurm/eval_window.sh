@@ -9,7 +9,7 @@
 # density-response curve (very-low / low / mid / high peak) from the same
 # 10 trained models — no retraining.
 #
-# Usage: sbatch -J eval_<tag> refactor/slurm/eval_window.sh <pos_csv> <out_tag> [n_episodes]
+# Usage: sbatch -J eval_<tag> scripts/slurm/eval_window.sh <pos_csv> <out_tag> [n_episodes]
 set -euo pipefail
 
 POS_CSV="${1:?usage: $0 <pos_csv> <out_tag> [n_episodes] [scen_prefix]}"
@@ -45,7 +45,7 @@ echo "window=$POS_CSV tag=$OUT_TAG episodes=$N_EPISODES prefix=$SCEN_PREFIX mode
 
 # --experiment only labels the scenario; with --pos-csv the traffic window
 # comes entirely from the replay file.
-python refactor/scripts/evaluate_models.py \
+python scripts/evaluate_models.py \
     --experiment a100_peak \
     --v2v-models  "${V2V_MODELS[@]}" \
     --local-models "${LOCAL_MODELS[@]}" \

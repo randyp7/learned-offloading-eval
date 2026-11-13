@@ -1,18 +1,18 @@
 # Cold-start training arm: identical to dqn_full.yaml / dqn_nov2v.yaml except that each
 # 20-frame episode replays a fragment of a SUMO run started on an empty network.
 # Descriptive record of the executed configuration. The code does not read this
-# file: the values are set by refactor/slurm/train_coldtrain.sh and coldtrain_fragments.sh,
+# file: the values are set by scripts/slurm/train_coldtrain.sh and coldtrain_fragments.sh,
 # config.py and refactor/src/training_config/. Those files are authoritative.
 # Checkpoints: checkpoints/berlin_coldtrain_{v2v,local}_seed{100..104}/model.zip
 # Results: results/eval_coldtrain_{paired_warm,paired_cold,main}_<period>.csv
-# Whole arm on SLURM: refactor/slurm/launch_coldtrain_arm.sh
+# Whole arm on SLURM: scripts/slurm/launch_coldtrain_arm.sh
 
 arm: berlin_coldtrain
 variants: [v2v, local]                 # local = --no-v2v, V2V range 0 m
-command: bash refactor/slurm/train_coldtrain.sh <v2v|local> <seed>
+command: bash scripts/slurm/train_coldtrain.sh <v2v|local> <seed>
 
-fragments:                             # refactor/slurm/coldtrain_fragments.sh -> data/coldtrain/
-  command: python refactor/scripts/make_paired_fragments.py coldtrain --cfg sumo/berlin_a100_16-18.sumocfg --out data/coldtrain --n 2000 --frames 20 --horizon 120 --seed 4242
+fragments:                             # scripts/slurm/coldtrain_fragments.sh -> data/coldtrain/
+  command: python scripts/make_paired_fragments.py coldtrain --cfg sumo/berlin_a100_16-18.sumocfg --out data/coldtrain --n 2000 --frames 20 --horizon 120 --seed 4242
   start_times: 2000 drawn uniformly from [0, 85800) s with seed 4242 (starts_all_seed4242.json)
   sumo_seed: 42 + start time
   frames_per_fragment: 20              # first 20 non-empty frames after a cold start at the start time

@@ -6,7 +6,7 @@ This experiment isolates the effect associated with preserving or resetting pre-
 
 ## Pair construction
 
-For each operating condition (`refactor/scripts/make_paired_fragments.py`):
+For each operating condition (`scripts/make_paired_fragments.py`):
 
 1. Draw 24 nominal start times with seed `7000 + sum(ord(c) for c in period)`, uniformly within the period and at least 2,000 s before its end (`data/paired/starts_<period>.json`).
 2. Construct the warm member from the first 100 non-empty frames of the continuous 24-hour trajectory at or after that nominal time.
@@ -53,7 +53,7 @@ Both members use the same task-generation rule, task-seed base and episode index
 - `results/paired_density/paired_density_frames.csv`: vehicles per frame by pair, member and frame position (1–100), with the trace time of each frame.
 - `data/paired/starts_<period>.json`, `data/paired/eval_sequence_<period>.csv`, `data/paired/{warm,cold}_<period>/_stats.csv`.
 - `configs/evaluation.yaml`.
-- `refactor/scripts/make_paired_fragments.py` and `refactor/slurm/cold_fragments.sh`, which regenerate both members of every pair (the fragment files themselves are not included; see the README).
+- `scripts/make_paired_fragments.py` and `scripts/slurm/cold_fragments.sh`, which regenerate both members of every pair (the fragment files themselves are not included; see the README).
 - Evaluation results: `results/eval_paired_{warm,cold}_<period>.csv` (warm-trained policies) and `results/eval_coldtrain_paired_{warm,cold}_<period>.csv` (cold-trained policies).
 
 ## Interpretation

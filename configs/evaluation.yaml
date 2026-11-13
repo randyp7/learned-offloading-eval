@@ -1,6 +1,6 @@
 # Shared evaluation protocol. Descriptive record of the executed configuration.
-# The code does not read this file: the values are set by refactor/slurm/eval_window.sh,
-# refactor/scripts/evaluate_models.py, refactor/scripts/make_paired_fragments.py and
+# The code does not read this file: the values are set by scripts/slurm/eval_window.sh,
+# scripts/evaluate_models.py, scripts/make_paired_fragments.py and
 # refactor/src/training_config/berlin_v2v_scenario.py, which are authoritative.
 # See docs/randomisation-and-evaluation.md.
 
@@ -22,10 +22,10 @@ policies:
     Greedy: shortest predicted completion time over the valid alternatives (label greedy)
     Local: always the requesting vehicle (label local)
     Random: uniform over the valid alternatives presented to DQN-Full (label random)
-    Greedy-NoV2V: Greedy without the V2V alternative (refactor/scripts/eval_greedy_nov2v.py)
+    Greedy-NoV2V: Greedy without the V2V alternative (scripts/eval_greedy_nov2v.py)
 
 period_evaluation:                     # Sect. 5 and 7
-  command: bash refactor/slurm/eval_window.sh data/paired/corridor_<period>_seed42.csv main_<period> 20 <arm>
+  command: bash scripts/slurm/eval_window.sh data/paired/corridor_<period>_seed42.csv main_<period> 20 <arm>
   episodes: 20                         # 100 non-empty frames each, drawn from the period slice
   periods:                             # seconds of day [start, end) of the slice
     00-04: [0, 14400]
@@ -47,7 +47,7 @@ paired_warm_cold_evaluation:           # Sect. 6
   episodes: 24                         # fragments drawn with replacement; 15 distinct start times per period
   evaluated_sequence: data/paired/eval_sequence_<period>.csv
   periods: [00-04, 08-09, 16-18, 20-24, 24h]
-  command: bash refactor/slurm/eval_window.sh data/paired/<warm|cold>_<period> paired_<warm|cold>_<period> 24 <arm>
+  command: bash scripts/slurm/eval_window.sh data/paired/<warm|cold>_<period> paired_<warm|cold>_<period> 24 <arm>
 
 aggregation:
   per_seed: pooled over every task of the evaluated episodes (deadline satisfaction = met / all tasks; energy = mean over all tasks)

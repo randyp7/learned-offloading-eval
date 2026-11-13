@@ -8,7 +8,7 @@
 # lambda 0.5, deadline_only reward, 1.5M steps) EXCEPT episodes are 20 frames drawn
 # from data/coldtrain/ (cold-started fragments) instead of 100 frames from the warm
 # 24 h trace. Scenario name prefix berlin_coldtrain_ so eval_window.sh can select it.
-# Usage: sbatch -J ct_v2v_s100 refactor/slurm/train_coldtrain.sh v2v 100
+# Usage: sbatch -J ct_v2v_s100 scripts/slurm/train_coldtrain.sh v2v 100
 set -euo pipefail
 VARIANT="${1:?v2v|local}"; SEED="${2:?seed}"
 V2V_FLAG=""; [[ "$VARIANT" == "local" ]] && V2V_FLAG="--no-v2v"

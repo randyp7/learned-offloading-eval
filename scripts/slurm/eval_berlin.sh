@@ -11,9 +11,9 @@
 #
 # Usage (from repo root):
 #   # Live SUMO:
-#   sbatch -J eval_peak refactor/slurm/eval_berlin.sh a100_peak
+#   sbatch -J eval_peak scripts/slurm/eval_berlin.sh a100_peak
 #   # FCD replay (pass the position CSV for this experiment as 2nd arg):
-#   sbatch -J eval_peak refactor/slurm/eval_berlin.sh a100_peak data/fcd/a100_peak.csv
+#   sbatch -J eval_peak scripts/slurm/eval_berlin.sh a100_peak data/fcd/a100_peak.csv
 set -euo pipefail
 
 EXPERIMENT="${1:?usage: $0 <general_24h|a100_peak> [pos_csv]}"
@@ -61,7 +61,7 @@ echo "local models(${#LOCAL_MODELS[@]}): ${LOCAL_MODELS[*]}"
 # modest count already aggregates a huge number of tasks. Override via 3rd arg.
 N_EPISODES="${3:-20}"
 
-python refactor/scripts/evaluate_models.py \
+python scripts/evaluate_models.py \
     --experiment "$EXPERIMENT" \
     --v2v-models  "${V2V_MODELS[@]}" \
     --local-models "${LOCAL_MODELS[@]}" \

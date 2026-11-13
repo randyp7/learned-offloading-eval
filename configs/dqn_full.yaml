@@ -1,13 +1,13 @@
 # DQN-Full (RSU-V2V-Local): warm-start training with V2V offloading enabled.
 # Descriptive record of the executed configuration. The code does not read this
-# file: the values are set by refactor/slurm/train_berlin.sh (command below),
+# file: the values are set by scripts/slurm/train_berlin.sh (command below),
 # config.py and refactor/src/training_config/. Those files are authoritative.
 # Checkpoints: checkpoints/berlin_general_v2v_seed{100..104}/model.zip
 # Result label in results/*.csv: RSU-V2V-Local
 
 arm: berlin_general
 variant: v2v
-command: bash refactor/slurm/train_berlin.sh v2v <seed> data/fcd/corridor_24h_seed42.csv
+command: bash scripts/slurm/train_berlin.sh v2v <seed> data/fcd/corridor_24h_seed42.csv
 training_seeds: [100, 101, 102, 103, 104]
 
 environment:

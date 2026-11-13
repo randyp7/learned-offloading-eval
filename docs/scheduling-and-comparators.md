@@ -24,7 +24,7 @@ The task takes the `k` cores that become free earliest and starts when all `k` a
 
 ## Greedy
 
-Greedy evaluates the valid Local, RSU and V2V alternatives on copies of the executor queues and selects the alternative with the shortest predicted completion time (`greedy_action` in `refactor/scripts/evaluate_models.py`).
+Greedy evaluates the valid Local, RSU and V2V alternatives on copies of the executor queues and selects the alternative with the shortest predicted completion time (`greedy_action` in `scripts/evaluate_models.py`).
 
 The estimate includes:
 
@@ -44,7 +44,7 @@ Greedy uses the simulator's full predicted completion time for each alternative.
 
 Greedy evaluates the same preselected peer and RSU presented to DQN.
 
-The Greedy-NoV2V variant (`refactor/scripts/eval_greedy_nov2v.py`) applies the same rule with the V2V alternative removed.
+The Greedy-NoV2V variant (`scripts/eval_greedy_nov2v.py`) applies the same rule with the V2V alternative removed.
 
 ## Local
 

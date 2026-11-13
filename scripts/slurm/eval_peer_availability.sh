@@ -11,7 +11,7 @@
 # results/peer_audit/eval_peer_availability_<tag>.csv (published values are
 # reproduced as a control column).
 #
-# Usage: sbatch -J peer_<tag> refactor/slurm/eval_peer_availability.sh <pos_csv> <tag> [experiment] [n_episodes]
+# Usage: sbatch -J peer_<tag> scripts/slurm/eval_peer_availability.sh <pos_csv> <tag> [experiment] [n_episodes]
 set -euo pipefail
 POS_CSV="${1:?}"; TAG="${2:?}"; EXP="${3:-a100_peak}"; N="${4:-20}"
 # Environment: on a cluster set CONDA_MODULE (the module that provides conda) and
@@ -29,5 +29,5 @@ latest_model () {  # released checkpoints first, then locally trained runs
   ls -dt refactor/results/trained_models/dqn/"$1"/run_*/model.zip 2>/dev/null | head -1; }
 M=(); for s in 100 101 102 103 104; do M+=("$(latest_model berlin_general_v2v_seed${s})"); done
 echo "window=$POS_CSV tag=$TAG experiment=$EXP episodes=$N models=${M[*]}"
-python refactor/scripts/eval_peer_availability.py --experiment "$EXP" --pos-csv "$POS_CSV" \
+python scripts/eval_peer_availability.py --experiment "$EXP" --pos-csv "$POS_CSV" \
     --n-episodes "$N" --v2v-models "${M[@]}" --out-csv "results/peer_audit/eval_peer_availability_${TAG}.csv"

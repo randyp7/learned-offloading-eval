@@ -13,9 +13,9 @@
 # Usage (from repo root):
 #   mkdir -p logs
 #   # Live SUMO (slow — reloads the net every episode):
-#   sbatch -J v2v_s100   refactor/slurm/train_berlin.sh v2v   100
+#   sbatch -J v2v_s100   scripts/slurm/train_berlin.sh v2v   100
 #   # FCD replay (fast — no live SUMO; pass the position CSV/fragment dir as 3rd arg):
-#   sbatch -J v2v_s100   refactor/slurm/train_berlin.sh v2v   100 data/fcd/general
+#   sbatch -J v2v_s100   scripts/slurm/train_berlin.sh v2v   100 data/fcd/general
 #
 # The canonical config below matches training_config/berlin_v2v_scenario.py:
 #   state-space v6 (30 feat), task-profile v5, rsu-profile v2 (40 GHz),
