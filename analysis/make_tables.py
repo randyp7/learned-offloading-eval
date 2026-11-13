@@ -75,6 +75,8 @@ for w, lab in WIN:
                     vs_greedy=float(a.mean() - pm.loc["greedy"].ds))
     num[f"v2v_delta_{w}"] = round(float(d.mean()), 4); num[f"v2v_p_{w}"] = round(float(t.pvalue), 4)
     num[f"v2v_allgt_{w}"] = diffs[w]["allgt"]; num[f"v2v_vs_greedy_{w}"] = round(diffs[w]["vs_greedy"], 4)
+    # Welch sensitivity check for the seed-matched comparison (docs/statistical-analysis.md)
+    num[f"v2v_welch_p_{w}"] = float(f"{stats.ttest_ind(a, b, equal_var=False).pvalue:.3g}")
 with open(OUT / "tab_service.tex", "w") as f:
     f.write("\\begin{tabular}{@{}l" + "c" * len(WIN) + "@{}}\n\\toprule\n")
     f.write(" & \\multicolumn{4}{c}{Targeted operating periods} & Aggregate \\\\\n\\cmidrule(lr){2-5}\\cmidrule(lr){6-6}\n")
@@ -131,7 +133,8 @@ for w, lab in rw_wins:
             cells[(key, 0)].append(f"{x.mean():.3f} $\\to$ {y.mean():.3f}"); cells[(key, 1)].append(f"{dm*100:+.1f}~pp ($p$={t.pvalue:.2f})")
         else:
             cells[(key, 0)].append(f"{x.mean():.2f} $\\to$ {y.mean():.2f}"); cells[(key, 1)].append(f"{100*dm/x.mean():+.0f}\\% ($p$={t.pvalue:.2f})")
-        num[f"rw_{key}_{w}"] = dict(base=round(float(x.mean()), 4), ea=round(float(y.mean()), 4), p=round(float(t.pvalue), 3))
+        num[f"rw_{key}_{w}"] = dict(base=round(float(x.mean()), 4), ea=round(float(y.mean()), 4), p=round(float(t.pvalue), 3),
+                                    welch_p=round(float(stats.ttest_ind(y, x, equal_var=False).pvalue), 3))
 with open(OUT / "tab_reward.tex", "w") as f:
     f.write("\\begin{tabular}{@{}l" + "c" * len(rw_wins) + "@{}}\n\\toprule\n")
     f.write("Metric & " + " & ".join(lab for _, lab in rw_wins) + " \\\\\n\\midrule\n")
@@ -272,20 +275,28 @@ if all(f.exists() for f in pf.values()):
     num["peer_audit_control_maxdiff"] = max(
         float((rows[t].published_control_ds - rows[t].audit_ds).abs().max()) for t in rows)
 
-# ---------------- Figure 2: diurnal density with windows ----------------
+# ---------------- Figure 2: diurnal density with windows (supplementary) ----------------
+# Hourly mean vehicles per non-empty frame of the continuous 24 h trajectory (data/fcd/corridor_24h_seed42.csv).
 hourly = {0: 3, 1: 3, 2: 4, 3: 5, 4: 15, 5: 148, 6: 347, 7: 370, 8: 375, 9: 368, 10: 383, 11: 385, 12: 358, 13: 393,
           14: 413, 15: 460, 16: 463, 17: 455, 18: 457, 19: 417, 20: 287, 21: 141, 22: 73, 23: 41}
 fig, ax = plt.subplots(figsize=(5.2, 2.6))
 ax.step(list(hourly) + [24], list(hourly.values()) + [hourly[23]], where="post", color="k", lw=1.2, label="Warm trace (hourly mean)")
 for (h0, h1, lab) in [(0, 4, "00--04"), (8, 9, "08--09"), (16, 18, "16--18"), (20, 24, "20--24")]:
-    ax.axvspan(h0, h1, alpha=.15, color="tab:blue"); ax.text((h0 + h1) / 2, 480, lab.replace("--", "–"), ha="center", fontsize=7)
-for w, _ in WIN:
-    sc = ROOT / f"data/paired/cold_{w}/_stats.csv"
-    if sc.exists() and w != "24h":
-        s = pd.read_csv(sc); ax.scatter(s["T"] / 3600, s.veh_per_frame_mean, s=10, color="tab:red", zorder=3,
-                                       label="Cold-start windows" if w == "00-04" else None)
-ax.set_xlim(0, 24); ax.set_xticks(range(0, 25, 4)); ax.set_xlabel("Hour of day"); ax.set_ylabel("Vehicles per frame")
-ax.legend(fontsize=7, loc="upper left"); ax.grid(alpha=.3); fig.tight_layout(); fig.savefig(OUT / "fig_diurnal.pdf"); plt.close(fig)
+    ax.axvspan(h0, h1, alpha=.15, color="tab:blue", label="Evaluation periods" if h0 == 0 else None)
+    ax.text((h0 + h1) / 2, 1.02, lab.replace("--", "\u2013"), ha="center", va="bottom", fontsize=7, transform=ax.get_xaxis_transform())
+for w in ["00-04", "08-09", "16-18", "20-24"]:   # cold-start windows actually evaluated (eval_sequence_<w>.csv)
+    sc, sq = ROOT / f"data/paired/cold_{w}/_stats.csv", ROOT / f"data/paired/eval_sequence_{w}.csv"
+    if sc.exists() and sq.exists():
+        s = pd.read_csv(sc); s = s[s["T"].isin(set(pd.read_csv(sq)["T"]))]
+        ax.scatter(s["T"] / 3600, s.veh_per_frame_mean, s=10, color="tab:red", zorder=3, label="Cold-start windows" if w == "00-04" else None)
+ax.set_xlim(0, 24); ax.set_xticks(range(0, 25, 4)); ax.set_yticks(range(0, 401, 100))
+ax.set_xlabel("Hour of day"); ax.set_ylabel("Vehicles per frame"); ax.grid(alpha=.3)
+h, l = ax.get_legend_handles_labels(); order = [l.index(x) for x in ("Warm trace (hourly mean)", "Cold-start windows", "Evaluation periods") if x in l]
+ax.legend([h[i] for i in order], [l[i] for i in order], fontsize=7, loc="upper center", bbox_to_anchor=(0.5, -0.31), ncol=3, frameon=False)
+fig.tight_layout()
+for ext, kw in (("pdf", {}), ("png", {"dpi": 150})):
+    fig.savefig(OUT / f"fig_diurnal.{ext}", bbox_inches="tight", pad_inches=0.02, **kw)
+plt.close(fig)
 
 (OUT / "numbers.json").write_text(json.dumps(num, indent=1))
 print(json.dumps({k: v for k, v in num.items() if not k.startswith("ds_")}, indent=1)[:3000])

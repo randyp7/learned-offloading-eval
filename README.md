@@ -19,7 +19,11 @@ this package rather than repeated in the manuscript:
 | [`docs/scheduling-and-comparators.md`](docs/scheduling-and-comparators.md) | multi-core processor scheduling; Greedy, Local and Random |
 | [`docs/radio-and-energy-model.md`](docs/radio-and-energy-model.md) | radio model and the requester and system energy ledgers |
 | [`docs/randomisation-and-evaluation.md`](docs/randomisation-and-evaluation.md) | training and evaluation randomisation, aggregation, released matching information |
+| [`docs/evaluation-protocol.md`](docs/evaluation-protocol.md) | the three evaluation dimensions (operating-condition coverage, state continuity, accounting scope) and how this study operationalises them |
+| [`docs/warm-cold-protocol.md`](docs/warm-cold-protocol.md) | construction of the matched warm/cold window pairs, what each member preserves or resets, released pair files |
+| [`docs/statistical-analysis.md`](docs/statistical-analysis.md) | units of analysis, aggregation order, paired and Welch tests |
 | [`docs/parameter-provenance.md`](docs/parameter-provenance.md) | source and status of every major parameter |
+| [`results/supplementary/`](results/supplementary/) | full-day traffic-density profile (`fig_diurnal.pdf`, `.png`) removed from the paper for space |
 | [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
 
 The paper remains authoritative for the research questions, experimental contrasts and
@@ -91,7 +95,9 @@ paired episodes in the warm/cold experiment).
 | Cold-start training density by frame (Sect. 6) | `coldtrain_density/coldtrain_density_frames.csv` | (text) |
 | Energy ledgers (Sect. 7) | full day `deadline_only/eval_general_24h.csv`, evening peak `eval_main_16-18.csv`; ledgers for every period are in `eval_main_<period>.csv` (columns `energy_user_j_per_task`, `energy_system_j_per_task`) | `tab_energy.tex` |
 | Energy in the reward (Sect. 7) | `eval_main_<period>.csv` (DQN-Full) against `eval_main_ea_<period>.csv` (DQN-Energy) | `tab_reward.tex` |
-| Diurnal density figure (Sect. 3) | `data/paired/cold_<period>/_stats.csv` and the 24-hour trajectory | `fig_diurnal.pdf` |
+| Full-day density profile (supplementary) | `data/paired/cold_<period>/_stats.csv`, `data/paired/eval_sequence_<period>.csv` and the 24-hour trajectory | `fig_diurnal.pdf` (copy in `results/supplementary/`) |
+| Warm/cold window pairs (Sect. 6) | `window-pairs.csv`, `paired_density/paired_density_frames.csv` | (text) |
+| Welch sensitivity of the seed-matched tests | `eval_main_<period>.csv`, `eval_main_ea_<period>.csv` | `numbers.json` (`v2v_welch_p_*`, `rw_*.welch_p`) |
 
 In the result files, `RSU-V2V-Local` is DQN-Full, `RSU-Local` is DQN-NoV2V, and
 `greedy`, `local` and `random` are the three rules.

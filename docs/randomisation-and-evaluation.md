@@ -26,7 +26,7 @@ Evaluation randomisation is based on seed 7000 and controls:
 
 The paired start times are drawn separately by `make_paired_fragments.py` (seed 7000 plus a per-period offset).
 
-Vehicle positions are taken from the recorded trajectory. Task streams are generated deterministically from the episode index and trace time (`experimental-configuration.md`). Communication, queue scheduling and learned-policy action selection are deterministic. Because none of the draws depends on the policy, every policy and every training seed is evaluated on the same episodes with the same tasks.
+Vehicle positions are taken from the recorded trajectory. Task streams are generated deterministically from the episode index and trace time (`experimental-configuration.md`). Communication, queue scheduling and learned-policy action selection are deterministic. None of these draws depends on the policy, so every policy and every training seed is evaluated on the same episodes with the same tasks. Vehicle computing classes are drawn in order of first use, and candidate peers are drawn only when V2V is enabled. Assignments are therefore identical for all policies with V2V enabled (DQN-Full, DQN-Energy, Greedy, Local, Random), but a given vehicle can receive a different class under DQN-NoV2V (`statistical-analysis.md`).
 
 ## Aggregation
 
@@ -43,7 +43,7 @@ Greedy, Local and Random are deterministic given the evaluation set and are repo
 The repository includes:
 
 - the seeded start times of the paired windows (`data/paired/starts_<period>.json`) and the 24 start times actually evaluated in each period (`data/paired/eval_sequence_<period>.csv`);
-- the warm/cold pairing: the warm and cold fragments of a pair share the file name `frag_t<start>.csv`, and the per-fragment density statistics are in `data/paired/{warm,cold}_<period>/_stats.csv`;
+- the warm/cold pairing: the warm and cold fragments of a pair share the file name `frag_t<start>.csv`; `results/window-pairs.csv` lists every pair with its density, and `results/paired_density/paired_density_frames.csv` gives vehicles per frame by pair and frame position (`warm-cold-protocol.md`);
 - the training seeds (100–104), the evaluation seed (7000) and the task-seed base (12345);
 - the final policy checkpoints, named by arm, variant and training seed (`checkpoints/berlin_<arm>_<variant>_seed<seed>/model.zip`);
 - the scripts that regenerate the evaluation windows (`refactor/scripts/make_paired_fragments.py`), the evaluations (`refactor/scripts/evaluate_models.py`, `refactor/slurm/eval_window.sh`) and the tables (`analysis/make_tables.py`).
