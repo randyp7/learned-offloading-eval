@@ -1,0 +1,55 @@
+# Shared evaluation protocol. Descriptive record of the executed configuration.
+# The code does not read this file: the values are set by refactor/slurm/eval_window.sh,
+# refactor/scripts/evaluate_models.py, refactor/scripts/make_paired_fragments.py and
+# refactor/src/training_config/berlin_v2v_scenario.py, which are authoritative.
+# See docs/randomisation-and-evaluation.md.
+
+evaluation_seed: 7000                  # EVAL_SEED
+randomisation:
+  episode_start_generator: numpy RandomState(7000 + 999)  # window start (slices) or fragment choice (paired)
+  computing_class_generator: numpy default_rng(7000)      # vehicle classes, sampled on first use in each episode
+  random_policy_generator: numpy default_rng(7000)
+  task_streams: fixed task-seed base 12345, episode index and trace time (policy-independent)
+action_selection: deterministic        # DQN greedy w.r.t. Q; no exploration
+checkpoint: final                      # checkpoints/<arm>_<variant>_seed<seed>/model.zip
+
+policies:
+  learned:
+    DQN-Full: {label: RSU-V2V-Local, v2v_range_m: 200, seeds: [100, 101, 102, 103, 104]}
+    DQN-NoV2V: {label: RSU-Local, v2v_range_m: 0, seeds: [100, 101, 102, 103, 104]}
+  arms: [berlin_general, berlin_coldtrain, berlin_energyaware]   # eval_window.sh 4th argument
+  rules:
+    Greedy: shortest predicted completion time over the valid alternatives (label greedy)
+    Local: always the requesting vehicle (label local)
+    Random: uniform over the valid alternatives presented to DQN-Full (label random)
+    Greedy-NoV2V: Greedy without the V2V alternative (refactor/scripts/eval_greedy_nov2v.py)
+
+period_evaluation:                     # Sect. 5 and 7
+  command: bash refactor/slurm/eval_window.sh data/paired/corridor_<period>_seed42.csv main_<period> 20 <arm>
+  episodes: 20                         # 100 non-empty frames each, drawn from the period slice
+  periods:                             # seconds of day [start, end) of the slice
+    00-04: [0, 14400]
+    04-08: [14400, 28800]              # text check only
+    08-09: [28800, 32400]
+    16-18: [57600, 64800]
+    20-24: [72000, 86400]
+  full_day:
+    trace: data/fcd/corridor_24h_seed42.csv
+    episodes: 20
+    result: results/deadline_only/eval_general_24h.csv
+
+paired_warm_cold_evaluation:           # Sect. 6
+  start_times: 24 per period, seed 7000 + sum(ord(c) for c in period), at least 2000 s before the period end
+  start_time_files: data/paired/starts_<period>.json
+  warm_fragments: first 100 non-empty frames at/after each start time, cut from the continuous 24 h trace
+  cold_fragments: first 100 non-empty frames of a SUMO run started at the start time on an empty network (SUMO seed 42)
+  pairing: identical fragment file names frag_t<start>.csv in warm_<period>/ and cold_<period>/
+  episodes: 24                         # fragments drawn with replacement; 15 distinct start times per period
+  evaluated_sequence: data/paired/eval_sequence_<period>.csv
+  periods: [00-04, 08-09, 16-18, 20-24, 24h]
+  command: bash refactor/slurm/eval_window.sh data/paired/<warm|cold>_<period> paired_<warm|cold>_<period> 24 <arm>
+
+aggregation:
+  per_seed: pooled over every task of the evaluated episodes (deadline satisfaction = met / all tasks; energy = mean over all tasks)
+  across_seeds: mean and sample standard deviation (ddof = 1) of the five seed values
+  rules: single values on the same episodes

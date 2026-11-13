@@ -1,0 +1,48 @@
+# DQN-Full (RSU-V2V-Local): warm-start training with V2V offloading enabled.
+# Descriptive record of the executed configuration. The code does not read this
+# file: the values are set by refactor/slurm/train_berlin.sh (command below),
+# config.py and refactor/src/training_config/. Those files are authoritative.
+# Checkpoints: checkpoints/berlin_general_v2v_seed{100..104}/model.zip
+# Result label in results/*.csv: RSU-V2V-Local
+
+arm: berlin_general
+variant: v2v
+command: bash refactor/slurm/train_berlin.sh v2v <seed> data/fcd/corridor_24h_seed42.csv
+training_seeds: [100, 101, 102, 103, 104]
+
+environment:
+  mobility: trajectory replay of data/fcd/corridor_24h_seed42.csv   # continuous 24 h corridor day, traffic seed 42
+  episode_length_frames: 100           # non-empty frames; tasks on frames 2-100
+  episode_start: uniform with replacement over the trace (generator seed = training seed + 999)
+  state_space_version: 6               # 30 features, docs/observation-space.md
+  task_profile_version: 5              # docs/experimental-configuration.md
+  rsu_profile_version: 2               # passed by the script; not applied in replay mode (RSU = 8 x 2.0 GHz from config.py)
+  lambda_per_veh_per_sec: 0.5
+  category_mix: {safety: 0.30, autonomous: 0.35, infotainment: 0.35}
+  v2v_range_m: 200
+  peer_selection: best                 # earliest estimated processing finish within 200 m
+  rsu_selection: nearest               # no coverage limit in replay mode
+  task_seed_base: 12345
+
+reward:
+  reward_type: deadline_only           # r = w_c * (+1 met / -1 missed), docs/rewards.md
+  category_weight: {safety: 2.0, autonomous: 1.0, infotainment: 0.5}
+  invalid_action_penalty: -3.0
+
+dqn:                                   # Stable-Baselines3 2.3.2, MlpPolicy
+  total_timesteps: 1500000             # one timestep = one task decision
+  learning_rate: 1.0e-4
+  buffer_size: 100000
+  learning_starts: 1000
+  batch_size: 32
+  tau: 1.0
+  gamma: 0.99
+  train_freq: 4
+  gradient_steps: 1
+  target_update_interval: 1000
+  exploration_fraction: 0.1
+  exploration_initial_eps: 1.0
+  exploration_final_eps: 0.05
+  net_arch: [256, 256]
+  activation_fn: ReLU
+  evaluated_checkpoint: final          # intermediate checkpoints (every 50,000 steps) are not used

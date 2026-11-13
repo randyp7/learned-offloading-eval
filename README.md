@@ -5,10 +5,41 @@ in Information Systems: A Vehicular Edge Computing Study* (under double-blind re
 needed to regenerate the traffic data, retrain and re-evaluate the policies, and
 rebuild every table and figure in the paper.
 
+## Relationship between the paper and this package
+
+The paper reports the assumptions and parameters required to interpret the experimental
+contrasts. To respect the CAiSE page limit, implementation-level details are documented in
+this package rather than repeated in the manuscript:
+
+| Document | Contents |
+|---|---|
+| [`docs/experimental-configuration.md`](docs/experimental-configuration.md) | software environment, corridor, vehicle and RSU computing resources, task generation |
+| [`docs/observation-space.md`](docs/observation-space.md) | the 30 observation features with indices and scaling, executor preselection, invalid actions |
+| [`docs/rewards.md`](docs/rewards.md) | deadline reward and energy-aware reward with executable coefficients |
+| [`docs/scheduling-and-comparators.md`](docs/scheduling-and-comparators.md) | multi-core processor scheduling; Greedy, Local and Random |
+| [`docs/radio-and-energy-model.md`](docs/radio-and-energy-model.md) | radio model and the requester and system energy ledgers |
+| [`docs/randomisation-and-evaluation.md`](docs/randomisation-and-evaluation.md) | training and evaluation randomisation, aggregation, released matching information |
+| [`docs/parameter-provenance.md`](docs/parameter-provenance.md) | source and status of every major parameter |
+| [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
+
+The paper remains authoritative for the research questions, experimental contrasts and
+interpretation. The released source code and the parameters it pins (`config.py`,
+`refactor/src/training_config/`, the job scripts in `refactor/slurm/`) are authoritative for
+executable implementation details; the documents and the files in `configs/` describe them
+and are not read by the code.
+
+**Recommended reproduction sequence.** (1) Create the documented software environment.
+(2) Regenerate the calibrated traffic trajectory and the evaluation windows (steps 2 and 3
+below). (3) Evaluate the released checkpoints on the recorded episode start times (step 4).
+(4) Rebuild the tables and figures from the new result files (step 1). (5) Compare the new
+result files with the released ones in `results/` and the generated tables with the paper. Training from scratch (step 5) is optional because the five
+final checkpoints of every reported training arm are included.
+
 ## Contents
 
 | path | what it is |
 |---|---|
+| `docs/`, `configs/` | Implementation-level documentation and configuration records (see above). |
 | `sumo/` | The A100 corridor scenario: road network and corridor demand (gzipped), RSU and bus-stop definitions, and `berlin_a100_16-18.sumocfg`. These are exactly the inputs SUMO resolves for the configuration used in the study. |
 | `envs/`, `net/`, `utils/`, `config.py` | The vehicular edge computing environment: task model, radio model (NR-V2X), roadside units and the trajectory-replay environment. |
 | `refactor/src/` | Training entry point, environment factory and the scenario configuration (`training_config/berlin_v2v_scenario.py`, which pins every parameter used in the paper). |
