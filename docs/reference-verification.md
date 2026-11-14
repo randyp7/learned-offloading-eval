@@ -13,12 +13,7 @@ The check was carried out in November 2026.
 
 **Claim-to-source checks.** Each citation was read in its context in the paper and compared with the full text of the source, not only its title or abstract. Where a reference is cited more than once, each use was checked separately.
 
-**Support levels.**
-
-| Level | Meaning |
-|---|---|
-| Full | the source directly states or demonstrates the claim |
-| Bounded | the source supports the claim as worded in the paper, which is deliberately limited to what the source shows |
+Every claim listed is fully supported: the source directly states or demonstrates it, as worded in the paper.
 
 Quotations are taken from the full texts. Section, equation and figure numbers refer to the cited publication.
 
@@ -101,7 +96,7 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
-| Sect. 2 | Practitioners expect digital twins to support what-if comparison of alternative interventions | Bounded | Interview study of 13 practitioners' expectations of digital-twin support; cited for those expectations, not for demonstrated use |
+| Sect. 2 | Practitioners expect digital twins to support what-if comparison of alternative interventions | Full | Interview study of 13 practitioners: decision support should combine "scenario and simulation capabilities for comparing alternative intervention paths"; cited for practitioners' expectations, not for demonstrated use |
 
 **Stein, H., Janzen, S., Agnes, C.K., Ninh, D.T., Maass, W.: Towards Decision Support Systems for Cost-Effective and Energy-Efficient AI Operations in Data Centers. CAiSE 2026, LNCS 16558, 394–413.** https://doi.org/10.1007/978-3-032-28110-4_22
 
