@@ -51,7 +51,7 @@ def _noise_dbm(bw_hz: float, nf_db: float) -> float:
     return kT_dbm_hz + 10*math.log10(bw_hz) + nf_db
 
 def _umi_pl_db(d_m: float, f_hz: float) -> float:
-    # simple 38.901 UMi NLOS-ish approximation
+    # 3GPP TR 36.814 Table B.1.2.1-1, UMi NLOS (hexagonal layout), without shadowing
     d = max(d_m, 1.0)
     f_ghz = f_hz / 1e9
     return 36.7*math.log10(d) + 22.7 + 26*math.log10(f_ghz)

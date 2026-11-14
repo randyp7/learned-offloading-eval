@@ -4,8 +4,8 @@ The Introduction and Related Work make bounded claims about representative vehic
 
 | Study | Method | Service measure | Energy measure | Simulation | Operating conditions | Initialisation stated | Training runs |
 |---|---|---|---|---|---|---|---|
-| Zhan et al. (2020) | Single-agent DRL (PPO) | Average task latency; weighted latency–energy cost; no deadline | Requester-side energy (local computation and upload); server computation excluded | Yes (authors' own simulation) | One synthetic vehicle; sweeps of latency weight (8 values) and task arrival rate (10 values) | Partly: evaluation initial queue and position randomised but identical across algorithms; no warm-up stated | Not identified; one learning curve per architecture; evaluation averaged over episodes; no variance reported |
-| Wei et al. (2024) | Multi-agent DRL for V2V resource trading | Completion ratio within deadline; average service latency; utility-based social welfare | Not reported | Yes (authors' own Python simulation) | Synthetic mobility; 3 vehicle counts and 3 load levels | Partly: entry speed and entry process; episode reset state not identified | Not identified; one learning curve per method; box plots of unstated basis |
+| Zhan et al. (2020) | Single-agent DRL (PPO); one representative vehicle, V2I only | Average task latency; weighted latency–energy cost; no deadline | Requester-side energy (local computation and upload); server computation excluded | Yes (authors' own simulation) | One synthetic vehicle; sweeps of latency weight (8 values) and task arrival rate (10 values) | Partly: evaluation initial queue and position randomised but identical across algorithms; no warm-up stated | Not identified; one learning curve per architecture; evaluation averaged over episodes; no variance reported |
+| Wei et al. (2024) | Multi-agent DRL for many-to-many offloading (V2V, RSU, inter-RSU and cloud tiers, plus local execution) | Completion ratio within deadline; average service latency; utility-based social welfare | Not reported | Yes (authors' own Python simulation) | Synthetic mobility; 3 vehicle counts and 3 load levels | Partly: entry speed and entry process; episode reset state not identified | Not identified; one learning curve per method; box plots of unstated basis |
 | Fan et al. (2023) | Joint V2I/V2V optimisation (decomposition algorithm and heuristic; no learning) | Total task processing delay; delay tolerance as a constraint | Not reported | Yes (MATLAB numerical simulation) | Synthetic one-shot snapshot; six one-factor sweeps (e.g. 4–32 vehicles, speed, bandwidth) | Partly: initial positions defined as model variables; generation method and warm-up not identified | Not applicable (no learned policy); number of repetitions not identified |
 | Wang et al. (2025) | Hybrid V2V/V2I double-layer Stackelberg game with heuristic search (no learning) | Mean task completion delay; deadline as a constraint | System energy: requester upload, peer and RSU computation; result return ignored | Yes (authors' own simulation; tool not identified) | Synthetic car-following mobility; 20–70 vehicles and 5–30 MB task size (6 levels each) | Partly: random positions and speeds per run; no warm-up or queue state | Not applicable (no learned policy); over 5,000 simulation runs per point; no variance reported |
 
@@ -13,7 +13,7 @@ The Introduction and Related Work make bounded claims about representative vehic
 
 The paper does not claim that all vehicular task-offloading studies use one operating condition, omit initialisation or use requester-only energy. The claim is deliberately bounded:
 
-> Existing evaluations leave open how operating-condition coverage, state continuity and accounting scope affect the resulting evidence.
+> The four representative studies examined here, two learning-based (Zhan et al.; Wei et al.) and two based on optimisation or game theory (Fan et al.; Wang et al.), do not consistently report three aspects of evaluation design, leaving uncertainty about how these choices affect the evidence: whether the sampled conditions represent the intended deployment envelope, whether evaluation windows or episodes preserve the preceding system state, and whether energy accounting includes remote communication and execution.
 
 The matrix is consistent with this bounded claim:
 
@@ -24,7 +24,7 @@ The matrix is consistent with this bounded claim:
 
 The Introduction therefore uses:
 
-> "In the studies considered here, these outcomes are estimated through simulation."
+> "…the representative studies reviewed in Sect. 2 evaluate offloading policies through simulation."
 
 It does not use stronger terms such as "all", "usually", "none" or "universally" unless the completed matrix supports them.
 

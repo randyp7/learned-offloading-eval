@@ -1,15 +1,15 @@
 # Parameter provenance
 
-This register identifies the source and status of every major experimental parameter. *Inherited* means taken from the earlier task-offloading implementation on which this study builds; *selected* means chosen for the present study. Values were transcribed from the executable files named in the last column, which remain authoritative.
+This register identifies the source and status of every major experimental parameter. *Inherited* means taken from the earlier task-offloading implementation on which this study builds (the BSc dissertation cited in the paper) with the value that study reports; *inherited code default, differs from the earlier study* means taken from that implementation's code, where the value differs from the one the earlier study reports; *selected* means chosen for the present study. Values were transcribed from the executable files named in the last column, which remain authoritative.
 
 ## Summary by group
 
 | Parameter group | Source / status |
 |---|---|
 | Traffic demand | Berlin SUMO scenario (BeST) derived from the count-calibrated MATSim Open Berlin Scenario |
-| Task classes and numerical task settings | Inherited from the earlier implementation (task profile 5); class interpretation informed by vehicular edge literature |
-| Vehicle compute classes | Inherited approximate fleet mix, informed by German passenger-car stock statistics |
-| RSU compute | Inherited from the earlier implementation (`config.py` defaults) |
+| Task classes and numerical task settings | Inherited from the earlier implementation (task profile 5); class interpretation informed by vehicular edge literature. The automated-driving deadline differs from the earlier study (550 ± 90 ms here; 150 ± 50 ms there) |
+| Vehicle compute classes | Class shares (0.30/0.50/0.15/0.05) inherited, informed by German passenger-car stock statistics; core counts and clock ranges are code defaults that differ from the earlier study |
+| RSU compute | Code default of the earlier implementation (`config.py`); differs from the earlier study (8 × 2.0 GHz here; 16 × 2.5 GHz there) |
 | Radio technology | 3GPP V2X and NR-V2X assumptions |
 | Radio numerical settings | Inherited from the earlier implementation; individual values below |
 | DQN defaults | Stable-Baselines3 2.3.2 |
@@ -26,13 +26,13 @@ This register identifies the source and status of every major experimental param
 | Traffic seed | 42 | – | Selected | README, step 2 |
 | Frame length | 1 | s | Selected | `config.py` `STEP_LENGTH_S` |
 | Number of RSUs; spacing | 8; 610.5 | –; m | Inherited placement | `data/rsu_data.csv` |
-| RSU cores × clock | 8 × 2.0 | GHz | Inherited | `config.py` `RSU_CORES_DEFAULT`, `RSU_PER_CORE_HZ_DEFAULT` |
+| RSU cores × clock | 8 × 2.0 | GHz | Inherited code default, differs from the earlier study (16 × 2.5) | `config.py` `RSU_CORES_DEFAULT`, `RSU_PER_CORE_HZ_DEFAULT` |
 | RSU computation energy | 0.15 | nJ/cycle | Inherited | `config.py` `ENERGY_PER_CYCLE_J_RSU` |
-| Vehicle compute classes | 0.30: 2 × 0.8–1.5; 0.50: 4 × 1.5–2.5; 0.15: 6 × 2.0–3.0; 0.05: 8 × 2.5–5.0 | share; cores × GHz | Inherited, informed by German passenger-car stock statistics | `config.py` `VEH_CPU_CLASSES` |
+| Vehicle compute classes | 0.30: 2 × 0.8–1.5; 0.50: 4 × 1.5–2.5; 0.15: 6 × 2.0–3.0; 0.05: 8 × 2.5–5.0 | share; cores × GHz | Shares inherited, informed by German passenger-car stock statistics; cores and clocks are inherited code defaults that differ from the earlier study (1–4 × 1.0–1.2; 2–4 × 1.2–2.2; 6–8 × 2.0–2.3; 10–12 × 2.0–2.3) | `config.py` `VEH_CPU_CLASSES` |
 | Vehicle computation energy | 1.0 | nJ/cycle | Inherited | `config.py` `ENERGY_PER_CYCLE_J_VEH` |
 | Task arrival rate | 0.5 | tasks/s per vehicle | Inherited (earlier study's stated value) | `--lambda-per-veh 0.5` |
 | Task class mix | 0.30 / 0.35 / 0.35 | safety / automated / infotainment | Inherited | `config.py` `CATEGORY_MIX` |
-| Task cycles, input, deadline | Task profile 5 (`experimental-configuration.md`) | Mcycles, KB, ms | Inherited | `config_loader.py` `TASK_PROFILES[5]` |
+| Task cycles, input, deadline | Task profile 5 (`experimental-configuration.md`) | Mcycles, KB, ms | Inherited; except the automated-driving deadline, an inherited code default that differs from the earlier study (550 ± 90 ms here; 150 ± 50 ms there) | `config_loader.py` `TASK_PROFILES[5]` |
 | Result-size ratio | 0.05 | – | Inherited | `config.py` `RESULT_SIZE_RATIO` |
 | Parallel fraction; `k_max` | `scheduling-and-comparators.md` | – | Inherited | `config.py` `PARALLEL` |
 | Parallel efficiency | 0.80 vehicle, 0.90 RSU | – | Inherited | `config.py` `PARALLEL_ETA_*` |
