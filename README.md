@@ -52,6 +52,8 @@ The following documents contain the analyses and details removed from the main p
   - initialisation reporting;
   - energy-accounting boundaries; and
   - training replication for the representative studies discussed in the Related Work.
+- [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md)
+  - evidence index mapping each interpretive claim of the Discussion to its supporting files and interpretation boundary.
 
 ### Traffic-scenario provenance
 
@@ -131,32 +133,6 @@ below). (3) Evaluate the released checkpoints on the recorded episode start time
 (4) Rebuild the tables and figures from the new result files (step 1). (5) Compare the new
 result files with the released ones in `results/` and the generated tables with the paper. Training from scratch (step 5) is optional because the five
 final checkpoints of every reported training arm are included.
-
-## Supplementary evidence supporting the Discussion
-
-The main paper reports the principal evidence for operating-condition coverage, state continuity and accounting scope. To satisfy the conference page limit, detailed diagnostic and exploratory analyses are provided here.
-
-The supplementary material is organised as follows:
-
-- [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md) documents peer availability, action use, Greedy-NoV2V, executor load and the morning-ramp robustness analysis.
-- [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md) documents warm/cold peer and executor states, the sparse-night audit and the exploratory cold-training analysis.
-- [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) documents the complete DQN-Energy reward ablation, service-normalised energy and analytical break-even calculations.
-- [`docs/statistical-analysis.md`](docs/statistical-analysis.md) documents aggregation order, matched-run comparisons, Welch-test sensitivity and the relationship between training-run and evaluation-window variability.
-- [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) maps each interpretive claim of the Discussion to the files above.
-
-These analyses support the interpretations in the Discussion but are not required to follow the paper's principal empirical argument.
-
-## Relationship between the Introduction and supplementary evidence
-
-The Introduction reports only the principal contribution and headline findings. Supporting details are distributed as follows:
-
-- literature-claim verification: [`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md);
-- complete peer and executor audits: [`docs/supplementary-service-analysis.md`](docs/supplementary-service-analysis.md);
-- matched warm/cold diagnostics and exploratory cold training: [`docs/supplementary-state-continuity.md`](docs/supplementary-state-continuity.md);
-- complete reward-ablation and energy sensitivity analyses: [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md);
-- training, evaluation and statistical procedures: [`docs/statistical-analysis.md`](docs/statistical-analysis.md).
-
-The supplementary analyses support the claims made in the Introduction but are not required to follow its principal argument.
 
 ## Contents
 
