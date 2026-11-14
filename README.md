@@ -83,6 +83,15 @@ Its Sources section gives page, section, figure, table or equation references to
 
 The matrix supports the paper's bounded statement that the four studies do not consistently report operating-condition coverage, state continuity and accounting scope. It does not support a field-wide claim that these aspects are never reported.
 
+## Reference verification
+
+[`docs/reference-verification.md`](docs/reference-verification.md) records how each reference cited in the paper was verified. For every reference it gives:
+
+- the authoritative bibliographic record (DOI or official source);
+- each claim the paper cites it for, checked separately for every use;
+- a supporting passage from the full text of the source; and
+- the level of support.
+
 ## Relationship between the paper and this package
 
 The paper reports the assumptions and parameters required to interpret the experimental
@@ -106,6 +115,7 @@ this package rather than repeated in the manuscript:
 | [`docs/supplementary-energy-analysis.md`](docs/supplementary-energy-analysis.md) | RQ3: ledgers for every operating condition, energy per deadline-satisfying task, DQN-Energy reward ablation, analytical break-even conditions |
 | [`docs/supplementary-discussion-evidence.md`](docs/supplementary-discussion-evidence.md) | evidence index mapping each interpretive claim of the Discussion to its supporting files and interpretation boundary |
 | [`docs/related-work-evidence-matrix.md`](docs/related-work-evidence-matrix.md) | evidence for the bounded statements about representative vehicular task-offloading studies in the Introduction and Related Work |
+| [`docs/reference-verification.md`](docs/reference-verification.md) | bibliographic record, cited claims and supporting source passage for every reference in the paper |
 | [`results/supplementary/`](results/supplementary/) | full-day traffic-density profile (`fig_diurnal.pdf`, `.png`) removed from the paper for space |
 | [`configs/`](configs/) | one record per training arm (`dqn_full.yaml`, `dqn_nov2v.yaml`, `dqn_energy.yaml`, `cold_training.yaml`) and the evaluation protocol (`evaluation.yaml`) |
 
