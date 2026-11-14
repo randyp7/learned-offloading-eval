@@ -140,7 +140,6 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
 | Sect. 4 | The trajectory is cut from the open Berlin SUMO scenario (BeST) | Full | The network and corridor routes in [`sumo/`](../sumo/) are cut from `best-scenario-v2` (see the README) |
-| Sect. 5.1 | The source scenario excludes commuter trips, so its A100 traffic shows weaker morning and evening peaks than observed counts; the peak labels are clock-time windows | Full | Sect. 4: "we do not see clear morning or evening peaks in the simulated data, as we see in the real counts. We assume that this is due to the fact that we excluded commuting traffic from the scenario" |
 
 **Ziemke, D., Kaddoura, I., Nagel, K.: The MATSim Open Berlin Scenario: A multimodal agent-based transport simulation scenario based on synthetic demand modeling and open data. Procedia Computer Science 151, 870–877 (2019).** https://doi.org/10.1016/j.procs.2019.04.120
 
