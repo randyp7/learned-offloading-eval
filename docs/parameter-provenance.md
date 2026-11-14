@@ -7,7 +7,7 @@ This register identifies the source and status of every major experimental param
 | Parameter group | Source / status |
 |---|---|
 | Traffic demand | Berlin SUMO scenario (BeST) derived from the count-calibrated MATSim Open Berlin Scenario |
-| Task classes and numerical task settings | Inherited from the earlier implementation (task profile 5); class interpretation informed by vehicular edge literature. The automated-driving deadline (550 ± 90 ms) is inherited from the previous study's shared code |
+| Task classes and numerical task settings | Inherited from the previous study's shared code (task profile 5); class interpretation informed by vehicular edge literature |
 | Vehicle compute classes | Class shares (0.30/0.50/0.15/0.05) inherited, informed by German passenger-car stock statistics; core counts and clock ranges are inherited from the previous study's shared code |
 | RSU compute | Inherited from the previous study's shared code (`config.py` defaults: 8 × 2.0 GHz) |
 | Radio technology | 3GPP V2X and NR-V2X assumptions |
@@ -32,7 +32,7 @@ This register identifies the source and status of every major experimental param
 | Vehicle computation energy | 1.0 | nJ/cycle | Inherited | `config.py` `ENERGY_PER_CYCLE_J_VEH` |
 | Task arrival rate | 0.5 | tasks/s per vehicle | Inherited (earlier study's stated value) | `--lambda-per-veh 0.5` |
 | Task class mix | 0.30 / 0.35 / 0.35 | safety / automated / infotainment | Inherited | `config.py` `CATEGORY_MIX` |
-| Task cycles, input, deadline | Task profile 5 (`experimental-configuration.md`) | Mcycles, KB, ms | Inherited; the automated-driving deadline (550 ± 90 ms) is inherited from the previous study's shared code | `config_loader.py` `TASK_PROFILES[5]` |
+| Task cycles, input, deadline | Task profile 5 (`experimental-configuration.md`) | Mcycles, KB, ms | Inherited from the previous study's shared code | `config_loader.py` `TASK_PROFILES[5]` |
 | Result-size ratio | 0.05 | – | Inherited | `config.py` `RESULT_SIZE_RATIO` |
 | Parallel fraction; `k_max` | `scheduling-and-comparators.md` | – | Inherited | `config.py` `PARALLEL` |
 | Parallel efficiency | 0.80 vehicle, 0.90 RSU | – | Inherited | `config.py` `PARALLEL_ETA_*` |
