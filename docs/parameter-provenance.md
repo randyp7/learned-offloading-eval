@@ -1,6 +1,6 @@
 # Parameter provenance
 
-This register identifies the source and status of every major experimental parameter. *Inherited* means taken from the earlier task-offloading implementation on which this study builds (the BSc dissertation cited in the paper) with the value that study reports; *inherited from the previous study's shared code* means taken from the code of that implementation, as shared with this study, where the value differs from the one reported in the dissertation; *selected* means chosen for the present study. Values were transcribed from the executable files named in the last column, which remain authoritative.
+This register identifies the source and status of every major experimental parameter. *Inherited* means taken from the earlier task-offloading implementation on which this study builds (the BSc dissertation cited in the paper) with the value that study reports; *inherited from the previous study's shared code* means taken from the code of that implementation, as shared with this study; *selected* means chosen for the present study. Values were transcribed from the executable files named in the last column, which remain authoritative.
 
 ## Summary by group
 
