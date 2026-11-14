@@ -47,6 +47,7 @@ Quotations are taken from the full texts. Section, equation and figure numbers r
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
 | Sect. 1 | Representative evaluations report time-based measures and, in some cases, energy | Full | Average latency and a weighted latency–energy cost; energy is "only associated with the task local computation and input data transmission" (requester side) |
+| Sect. 2 | Example of a requester-only energy ledger | Full | Sect. II-D: "From VT's perspective, RE of tasks does not consume its energy" (VT = the requesting vehicle; RE = remote execution) |
 | Sect. 2 | Single-agent reinforcement learning approach; one of the two learning-based representative studies | Full | PPO for one representative vehicle, V2I only |
 
 **Fan, W., Su, Y., Liu, J., Li, S., Huang, W., Wu, F., Liu, Y.: Joint Task Offloading and Resource Allocation for Vehicular Edge Computing Based on V2I and V2V Modes. IEEE Transactions on Intelligent Transportation Systems 24(4), 4277–4292 (2023).** https://doi.org/10.1109/TITS.2022.3230430
@@ -61,6 +62,7 @@ Quotations are taken from the full texts. Section, equation and figure numbers r
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
 | Sect. 1 | Representative evaluations report time-based measures and, in some cases, energy | Full | Completion delay with the deadline as constraint C6; Eqs. 19–22 and Figs. 8 and 14 report "Total Energy Consumption of System" |
+| Sect. 2 | Example of a broader operational (system-wide) energy ledger | Full | System energy covers requester upload and peer and RSU computation (Sect. III-C, Eqs. 19–22) |
 | Sect. 2 | Game-theoretic formulation; one of the two non-learning representative studies | Full | "double-layer Stackelberg game … in the hybrid V2V/V2I offloading scenario" |
 
 The detailed comparison of these four studies is in [`related-work-evidence-matrix.md`](related-work-evidence-matrix.md).
@@ -77,7 +79,7 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
-| Sect. 2 | The learned policy is treated as an algorithmic digital agent within a wider work system | Full (definitions) | Defines digital agents as totally automated IS that are algorithmic agents, and work systems. The paper uses these definitions only; Alter's own analysis sets aside agents embedded in devices such as network controllers |
+| Sect. 2 | Following Alter's definition of a digital agent, the learned policy is treated as a digital agent within a wider work system | Full | Sect. 2.4: "A digital agent is a totally automated IS that is an algorithmic agent serving a specific purpose." The paper uses this definition only; Alter's own analysis sets aside agents embedded in devices such as network controllers |
 
 **Wais, B., Rinderle-Ma, S.: Towards a Comprehensive Evaluation of Decision Rules and Decision Mining Algorithms Beyond Accuracy. CAiSE 2024, LNCS 14663, 403–419.** https://doi.org/10.1007/978-3-031-61057-8_24
 
@@ -138,6 +140,7 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
 | Sect. 4 | The trajectory is cut from the open Berlin SUMO scenario (BeST) | Full | The network and corridor routes in [`sumo/`](../sumo/) are cut from `best-scenario-v2` (see the README) |
+| Sect. 5.1 | The source scenario excludes commuter trips, so its A100 traffic shows weaker morning and evening peaks than observed counts; the peak labels are clock-time windows | Full | Sect. 4: "we do not see clear morning or evening peaks in the simulated data, as we see in the real counts. We assume that this is due to the fact that we excluded commuting traffic from the scenario" |
 
 **Ziemke, D., Kaddoura, I., Nagel, K.: The MATSim Open Berlin Scenario: A multimodal agent-based transport simulation scenario based on synthetic demand modeling and open data. Procedia Computer Science 151, 870–877 (2019).** https://doi.org/10.1016/j.procs.2019.04.120
 
@@ -149,7 +152,7 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
-| Sect. 4 | The trajectory is generated with SUMO | Full | The reference the SUMO project asks users to cite |
+| Sect. 4 | The trajectory is generated with SUMO 1.27 | Full | The reference the SUMO project asks users to cite; the version is pinned in `requirements.txt` |
 
 **3GPP TR 36.814 V9.2.0: Evolved Universal Terrestrial Radio Access (E-UTRA); Further advancements for E-UTRA physical layer aspects (2017).**
 
