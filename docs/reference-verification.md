@@ -164,7 +164,7 @@ The detailed comparison of these four studies is in [`related-work-evidence-matr
 
 ## Previous study
 
-**BSc dissertation (2026), anonymised for review.**
+**Quantifying the Benefit of V2V Cooperative Offloading in Vehicular Edge Computing via Deep Reinforcement Learning. BSc dissertation, Department of Computer Science, The University of Manchester (2026).**
 
 | Where cited | Claim | Support | Evidence |
 |---|---|---|---|
