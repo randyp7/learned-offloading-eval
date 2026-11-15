@@ -1,7 +1,6 @@
-# Evaluation Design for Learned Task Offloading in Vehicular Edge Computing — Replication Package
+# Designing Credible Evaluations of Learned Components in Information Systems: A Vehicular Edge Computing Study — Replication Package
 
-This repository accompanies the paper *Designing Credible Evaluations of Learned Components
-in Information Systems: A Vehicular Edge Computing Study* (under double-blind review). It contains everything
+This repository is the replication package for the paper above (under double-blind review). It contains everything
 needed to regenerate the traffic data, retrain and re-evaluate the policies, and
 rebuild the result tables of the paper.
 
